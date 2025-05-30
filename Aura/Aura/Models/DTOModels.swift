@@ -18,19 +18,20 @@ struct AuthResponseDTO: Decodable {
         let token: String
 }
 
-//MARK: L'endpoint nous permettra de récupérer les détails du compte et la liste des transactions : GET /account.
-/// DTO qui représentera les champs d'une seule transaction.
-struct TansactionDTO: Decodable, Hashable {
+//MARK: DTOs concernant la récuperation des détails du compte et la liste des transactions : GET /account.
+/// GET. DTO qui représentera les champs d'une seule transaction.
+struct TransactionDTO: Decodable, Hashable {
         let value: Decimal // correspond à la clé value du JSON
         let label: String// correspond à la clé label du JSON
 }
-///Ce DTO va encapsuler l'ensemble des informations retournées par l'endpoint GET /account. C'est la réponse globale de GET/account
+///GET. Ce DTO va encapsuler les informations retournées par l'endpoint concernant les details du compte. GET/account
 struct AccountDetailsDTO: Decodable {
         let currentBalance: Decimal
-        let transactions: [TansactionDTO]
+        let transactions: [TransactionDTO]
 }
 
-//MARK: POST /account/transfer: pour demander un transfert, l'application doit envoyer un corps de requête JSON
+//MARK: DTO concernant la demande de transfert. Ce model a pour unique rôle de formater les données (recipient, amount) exactement comme l'API les attend pour initier un transfert. C'est un "paquet" que l'on prépare pour l'expédition.
+///POST.. Initier un transfert d'argen
 struct TransferRequestDTO: Encodable {
         let recipient: String //email ou phone
         let amount: Decimal
