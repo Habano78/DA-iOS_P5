@@ -6,6 +6,12 @@
 //
 
 import Foundation
+
+// MARK: Authentication Model. Représenter la session active de l'utilisateur au sein de l'application.
+struct UserSession {
+        let token: String
+}
+
 //MARK: Ce modèle, derivé de TransactionDTO, représente une transaction individuelle telle que l'application la comprendra et l'utilisera.
 struct Transaction: Identifiable, Hashable {
         let id: UUID
@@ -40,11 +46,11 @@ struct AccountDetails {
         }
         
         // Un init pour créer des instances d'AccountDetail manuellement
-            // (utile pour les prévisualisations SwiftUI ou les tests)
-            init(currentBalance: Decimal, transactions: [Transaction]) {
+        // (utile pour les prévisualisations SwiftUI ou les tests)
+        init(currentBalance: Decimal, transactions: [Transaction]) {
                 self.currentBalance = currentBalance
                 self.transactions = transactions
-            }
+        }
 }
 
 //MARK: Ce model est "au cas où". Sert à Représenter les informations nécessaires pour initier un transfert, telles qu'elles sont gérées ou validées au sein de l'application avant l'appel à l'API.
