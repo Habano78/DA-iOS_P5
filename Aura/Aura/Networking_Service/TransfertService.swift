@@ -20,7 +20,6 @@ protocol TransfertServiceProtocole {
 }
 
 class TransfertService: TransfertServiceProtocole {
-        private let baseURLString = "http://127.0.0.1:8080" // Adresse de base de l'API.
         private let urlSession: URLSession                   // Instance pour exécuter les requêtes HTTP.
         private let jsonEncoder: JSONEncoder                 // Outil pour convertir les objets Swift en JSON pour le corps des requêtes.
         // Pas de jsonDecoder nécessaire ici pour le chemin de succès (réponse vide).
@@ -36,8 +35,8 @@ class TransfertService: TransfertServiceProtocole {
                 
                 // MARK: - Étape 1: Construction de l'URL
                 // Identique à AccountService: construction de l'URL complète pour l'endpoint "/account/transfer".
-                guard let baseURL = URL(string: self.baseURLString) else {
-                        print("TransferService: Erreur critique - baseURLString est invalide: \(self.baseURLString)")
+                guard let baseURL = URL(string: baseURL.baseURLString) else {
+                        print("TransferService: Erreur critique - baseURLString est invalide: \(baseURL.baseURLString)")
                         throw APIServiceError.invalidURL
                 }
                 var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
@@ -52,7 +51,7 @@ class TransfertService: TransfertServiceProtocole {
                 
                 // MARK: - Étape 2: Création et Configuration de URLRequest
                 var request = URLRequest(url: url)
-                // Différence clé : Méthode POST car nous envoyons des données pour créer une ressource/action.
+                // Méthode POST car nous envoyons des données pour créer une ressource/action.
                 request.httpMethod = "POST"
                 
                 // Header d'authentification, comme pour AccountService.

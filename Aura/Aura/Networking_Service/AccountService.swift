@@ -14,7 +14,6 @@ protocol AccountServiceProtocol{
 class AccountService: AccountServiceProtocol{
         
         //MARK: Définition des propriétés d'instance dont la classe a besoin.
-        private let baseURLString = "http://127.0.0.1:8080" // Adresse de base pour tous les appels API.
         private let jsonDecoder: JSONDecoder
         private let urlSession: URLSession
         
@@ -32,15 +31,14 @@ class AccountService: AccountServiceProtocol{
                 // Étape 6 : Mapping du DTO en Modèle Métier et retour
                 
                 //MARK: 1. Construction de l'URL final finalURL
-                ///On tente de créer un objet URL à partir de notre baseURLString (chaine).
+                ///1.1. On tente de créer un objet URL à partir de notre baseURLString (chaine).
                 /// Cet initialiseur retourne un URL? (un optionnel), car la chaîne pourrait être mal formée.
-                guard let baseURL = URL(string: self.baseURLString) else {
-                        print("AccountService: Erreur critique - baseURLString est invalide: \(self.baseURLString)") // Pour le débogage
+                guard let baseURL = URL(string: baseURL.baseURLString) else {
+                        print("AccountService: Erreur critique - baseURLString est invalide: \(baseURL.baseURLString)") // Pour le débogage
                         throw APIServiceError.invalidURL // On arrête la fonction et on lance notre erreur spécifique.
                 }
                 print("AccountService: baseURL construite avec succès: \(baseURL.absoluteString)")
-                
-                //1.2. Ajouter le chemin de l'endpoint (/account) à la baseURL
+                ///1.2. Ajouter le chemin de l'endpoint (/account) à la baseURL
                 /// On crée une variable components et on initialise URLComponents en lui passant notre baseURL
                 var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
                 components?.path = "/account"

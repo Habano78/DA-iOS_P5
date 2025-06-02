@@ -18,21 +18,19 @@ protocol AuthenticationServiceProtocol {
 class AuthService: AuthenticationServiceProtocol {
         
         //MARK: Définition des propriétés d'instance dont la classe a besoin.
-        private let baseURLString = "http://127.0.0.1:8080" // Adresse de base pour tous les appels API.
         private let urlSession: URLSession                  // Instance pour exécuter les requêtes HTTP.
-        private let jsonEncoder: JSONEncoder                // Outil pour convertir les objets Swift en JSON (pour les requêtes).
-        private let jsonDecoder: JSONDecoder                // Outil pour convertir le JSON des réponses en objets Swift.
+        private let jsonEncoder: JSONEncoder                // Pour convertir les objets Swift en JSON
+        private let jsonDecoder: JSONDecoder                // Pour convertir le JSON en objets Swift.
         
         init(urlSession: URLSession = .shared) {
                 self.urlSession = urlSession
                 self.jsonEncoder = JSONEncoder()
                 self.jsonDecoder = JSONDecoder()
-                // Configurations optionnelles pour l'encoder/decoder ici si besoin.
         }
         
         func login(credentials: AuthRequestDTO) async throws -> UserSession {
                 // 1. Construction de l'URL complète pour l'endpoint "/auth".
-                guard let baseURL = URL(string: baseURLString),
+                guard let baseURL = URL(string: baseURL.baseURLString),
                       var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
                         throw APIServiceError.invalidURL // Lance une erreur si l'URL de base est invalide.
                 }
