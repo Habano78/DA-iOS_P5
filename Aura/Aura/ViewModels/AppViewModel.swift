@@ -15,7 +15,7 @@ class AppViewModel: ObservableObject {
         
         //MARK: Changement important : AccountDetailViewModel maintenant stocké et optionnel
         // 'stockedAccountDetailViewModel' est publié pour que les vues puissent réagir à sa présence/absence.
-        @Published private(set) var stockedAccountDetailViewModel: AccountDetailViewModel? // (A) ✅ Parfait !
+        @Published private(set) var stockedAccountDetailViewModel: AccountDetailViewModel?
         
         //MARK: nouvelles propriétés d'instance qu'AppViewModel doit transmettre au correspondants viewmodels
         private let authService: AuthenticationServiceProtocol
@@ -27,7 +27,7 @@ class AppViewModel: ObservableObject {
                 self.isLogged = false
                 self.authService = AuthService()
                 self.accountService = AccountService()
-                // stockedAccountDetailViewModel est nil au démarrage, c'est correct.
+                self.transferService = TransfertService()
         }
         
         // authenticationViewModel reste une propriété calculée, ce qui est acceptable
