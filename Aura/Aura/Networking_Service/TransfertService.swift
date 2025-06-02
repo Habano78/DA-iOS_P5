@@ -9,7 +9,7 @@
 
 import Foundation
 
-protocol TransfertServiceProtocole {
+protocol TransfertServiceProtocol {
         /// Tente d'exécuter un transfert d'argent.
         /// - Parameters:
         ///   - transferData: Les détails du transfert à effectuer (modèle de données interne).
@@ -19,7 +19,7 @@ protocol TransfertServiceProtocole {
         func executeTransfer(transferData: TransfertRequestData, identifiant: UserSession) async throws
 }
 
-class TransfertService: TransfertServiceProtocole {
+class TransfertService: TransfertServiceProtocol {
         private let urlSession: URLSession                   // Instance pour exécuter les requêtes HTTP.
         private let jsonEncoder: JSONEncoder                 // Outil pour convertir les objets Swift en JSON pour le corps des requêtes.
         // Pas de jsonDecoder nécessaire ici pour le chemin de succès (réponse vide).

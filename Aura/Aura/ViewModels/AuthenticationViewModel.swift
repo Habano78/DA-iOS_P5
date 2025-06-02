@@ -27,7 +27,7 @@ class AuthenticationViewModel: ObservableObject {
                 self.onLoginSucceed = onLoginSucceed
         }
         
-        //MARK: ajout d'async et
+        //MARK: ajout d'async
         func login() async {
                 isLoading = true                        ///  Indiquer que le chargement commence
                 defer { isLoading = false }      /// Garantir que isLoading sera false à la sortie de cette fonction
