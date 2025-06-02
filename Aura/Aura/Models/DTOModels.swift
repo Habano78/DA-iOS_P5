@@ -21,8 +21,8 @@ struct AuthResponseDTO: Decodable {
 //MARK: DTOs concernant la récuperation des détails du compte et la liste des transactions : GET /account.
 /// GET. DTO qui représentera les champs d'une seule transaction.
 struct TransactionDTO: Decodable, Hashable {
-        let value: Decimal // correspond à la clé value du JSON
-        let label: String// correspond à la clé label du JSON
+        let value: Decimal
+        let label: String
 }
 ///GET. Ce DTO va encapsuler les informations retournées par l'endpoint concernant les details du compte. GET/account
 struct AccountDetailsDTO: Decodable {

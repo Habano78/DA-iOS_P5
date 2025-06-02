@@ -15,8 +15,9 @@ struct UserSession {
 //MARK: Ce modèle, derivé de TransactionDTO, représente une transaction individuelle telle que l'application la comprendra et l'utilisera.
 struct Transaction: Identifiable, Hashable {
         let id: UUID
-        let value: Decimal
         let label: String
+        let value: Decimal
+        
         
         //Initialiseur pour convertir un TransactionDTO en Transaction métier
         // On ajoute ici la logique pour les champs manquants dans le DTO.
@@ -35,26 +36,26 @@ struct Transaction: Identifiable, Hashable {
 
 //MARK: Ce modèle représentera les informations du compte de l'utilisateur.
 struct AccountDetails {
-        let currentBalance: Decimal
+        let totalAmount: Decimal
         let transactions: [Transaction]
         
         // Init pour convertir un AccountDetailsDTO en AccountDetail (modèle métier)
         init(from dto: AccountDetailsDTO) {
-                self.currentBalance = dto.currentBalance
-                // Ici sont transformées chaque TransactionDTO en une instance de notre modèle métier Transaction.
-                self.transactions = dto.transactions.map(Transaction.init)
+                self.totalAmount = dto.currentBalance // Mapping de dto.currentBalance vers self.totalAmount
+                self.transactions = dto.transactions.map(Transaction.init)// chaque Transaction DTO devient une instance du ModMétier Transaction.
         }
         
         // Un init pour créer des instances d'AccountDetail manuellement
         // (utile pour les prévisualisations SwiftUI ou les tests)
-        init(currentBalance: Decimal, transactions: [Transaction]) {
-                self.currentBalance = currentBalance
+        init(totalAmount: Decimal, transactions: [Transaction]) {
+                self.totalAmount = totalAmount
                 self.transactions = transactions
         }
 }
 
-//MARK: Ce model est "au cas où". Sert à Représenter les informations nécessaires pour initier un transfert, telles qu'elles sont gérées ou validées au sein de l'application avant l'appel à l'API.
-struct TransferRequestData {
+//MARK: Ce model sert à Représenter les informations nécessaires pour initier un transfert, telles qu'elles sont gérées ou validées au sein de l'application avant l'appel à l'API.
+struct TransfertRequestData {
         let recipient: String
         let amount: Decimal
 }
+ 

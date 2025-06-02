@@ -10,6 +10,9 @@
 		225138A12DE9DF7E00E96943 /* BusinnessModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138A02DE9DF7E00E96943 /* BusinnessModels.swift */; };
 		225138A42DE9DFB400E96943 /* DTOModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138A32DE9DFB400E96943 /* DTOModels.swift */; };
 		225138A72DEA31DB00E96943 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138A62DEA31DB00E96943 /* AuthService.swift */; };
+		225138A92DEA458000E96943 /* AccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138A82DEA458000E96943 /* AccountService.swift */; };
+		225138AB2DEA6F2400E96943 /* TransfertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138AA2DEA6F2400E96943 /* TransfertService.swift */; };
+		225138AD2DECB07E00E96943 /*  APIServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138AC2DECB07E00E96943 /*  APIServiceError.swift */; };
 		53D4187C2AC7099A0070ADB1 /* AuraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D4187B2AC7099A0070ADB1 /* AuraApp.swift */; };
 		53D418802AC7099B0070ADB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53D4187F2AC7099B0070ADB1 /* Assets.xcassets */; };
 		53D418832AC7099B0070ADB1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53D418822AC7099B0070ADB1 /* Preview Assets.xcassets */; };
@@ -28,6 +31,9 @@
 		225138A02DE9DF7E00E96943 /* BusinnessModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinnessModels.swift; sourceTree = "<group>"; };
 		225138A32DE9DFB400E96943 /* DTOModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTOModels.swift; sourceTree = "<group>"; };
 		225138A62DEA31DB00E96943 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		225138A82DEA458000E96943 /* AccountService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountService.swift; sourceTree = "<group>"; };
+		225138AA2DEA6F2400E96943 /* TransfertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransfertService.swift; sourceTree = "<group>"; };
+		225138AC2DECB07E00E96943 /*  APIServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " APIServiceError.swift"; sourceTree = "<group>"; };
 		53D418782AC7099A0070ADB1 /* Aura.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aura.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53D4187B2AC7099A0070ADB1 /* AuraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuraApp.swift; sourceTree = "<group>"; };
 		53D4187F2AC7099B0070ADB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -67,6 +73,9 @@
 			isa = PBXGroup;
 			children = (
 				225138A62DEA31DB00E96943 /* AuthService.swift */,
+				225138A82DEA458000E96943 /* AccountService.swift */,
+				225138AA2DEA6F2400E96943 /* TransfertService.swift */,
+				225138AC2DECB07E00E96943 /*  APIServiceError.swift */,
 			);
 			path = Networking_Service;
 			sourceTree = "<group>";
@@ -216,11 +225,14 @@
 				53D4189B2AC711990070ADB1 /* AuthenticationViewModel.swift in Sources */,
 				53D4189D2AC715AA0070ADB1 /* AccountDetailViewModel.swift in Sources */,
 				53D418912AC70A920070ADB1 /* AuthenticationView.swift in Sources */,
+				225138AD2DECB07E00E96943 /*  APIServiceError.swift in Sources */,
+				225138AB2DEA6F2400E96943 /* TransfertService.swift in Sources */,
 				53D418932AC70AB10070ADB1 /* AccountDetailView.swift in Sources */,
 				53D4189F2AC717890070ADB1 /* MoneyTransferViewModel.swift in Sources */,
 				225138A12DE9DF7E00E96943 /* BusinnessModels.swift in Sources */,
 				53D4188D2AC709F40070ADB1 /* AppViewModel.swift in Sources */,
 				53D418A12AC71B8F0070ADB1 /* View+Extensions.swift in Sources */,
+				225138A92DEA458000E96943 /* AccountService.swift in Sources */,
 				225138A72DEA31DB00E96943 /* AuthService.swift in Sources */,
 				53D418992AC70FD80070ADB1 /* Color+Extensions.swift in Sources */,
 			);
