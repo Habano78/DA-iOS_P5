@@ -15,19 +15,20 @@ class AppViewModel: ObservableObject {
         @Published var activeUserSession: UserSession?
         ///Instance d'un service qui se conforme à AuthenticationServiceProtocol et qui sera transmi a AuthViewModel
         private let monAuthService: AuthenticationServiceProtocol
-       
+        
         //MARK: init
         init() {
                 self.isLogged = false
-                self.monAuthService = AuthService()
+                self.monAuthService = AuthService() /// nouvelle instance de la classe concrète AuthService()
         }
         
         var authenticationViewModel: AuthenticationViewModel {
-                return AuthenticationViewModel (authService: self.monAuthService,
-                                                onLoginSucceed: { [weak self] receivedUserSession in
-                        self?.activeUserSession = receivedUserSession
-                        self?.isLogged = true
-                }
+                return AuthenticationViewModel (
+                        authService: self.monAuthService, 
+                        onLoginSucceed: { [weak self] receivedUserSession in
+                                self?.activeUserSession = receivedUserSession
+                                self?.isLogged = true
+                        }
                 )
         }
         

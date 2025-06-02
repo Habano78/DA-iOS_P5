@@ -8,9 +8,10 @@
 import Foundation
 
 class AuthenticationViewModel: ObservableObject {
-        // Champs de texte de la Vue
+        
         @Published var username: String = ""
         @Published var password: String = ""
+        
         // Nouveau: États initial pour la Vue
         @Published var isLoading: Bool = false
         @Published var errorMessage: String?
@@ -18,23 +19,25 @@ class AuthenticationViewModel: ObservableObject {
         //Nouvelle propriété pour stocker le service d'authentification.
         private let authService: AuthenticationServiceProtocol
         
-        ///Modif: Maintenant, il prend un UserSession en paramètre
+        ///Modif: Maintenant il prend un UserSession en paramètre
         let onLoginSucceed: ((UserSession) -> Void)
         
         init(authService: AuthenticationServiceProtocol, onLoginSucceed: @escaping (UserSession) -> Void) {
                 self.authService = authService /// asignation du nouveau service passé en paramètre
                 self.onLoginSucceed = onLoginSucceed
         }
-        ///Modifs : 1.ajout async dans func; 2. init isLoading à true et de message à nil; 3; defer; 4.
+        
+        //MARK: ajout d'async et
         func login() async {
-                isLoading = true
-                defer { isLoading = false } ///Assure que isLoading est toujours remis à false
-                errorMessage = nil
+                isLoading = true                        ///  Indiquer que le chargement commence
+                defer { isLoading = false }      /// Garantir que isLoading sera false à la sortie de cette fonction
+                errorMessage = nil                   ///Réinitialiser les messages d'erreur précédents
                 
-                ///nouveau// Instancie AuthRequestDTO avec les propriétés 'username' et 'password' du ViewModel saisies par l'utilisateur.
+                //MARK: Préparer les données pour la requête
+                ///Instancie AuthRequestDTO avec les propriétés 'username' et 'password' du ViewModel saisies par l'utilisateur.
                 let  loginCredentials  = AuthRequestDTO(username: self.username, password: self.password)
                 
-                //MARK: Appel au Service, gestion du succès et des erreurs
+                //MARK: Appel au Service et gérer la réponse
                 do {
                         let userSession = try await authService.login(credentials: loginCredentials) /// Appeler la méthode login du service
                         print("AuthenticationViewModel: Connexion réussie via le service. Token: \(userSession.token.prefix(8))")
@@ -42,10 +45,7 @@ class AuthenticationViewModel: ObservableObject {
                 } catch let error as APIServiceError {
                         self.errorMessage = error.errorDescription
                 }catch {
-                        self.errorMessage = "Une erreur inattendue est survenue.Veuillez réessayer."
+                        self.errorMessage = "Erreur inattendue.Veuillez réessayer."
                 }
-                ///modif
-                defer { isLoading = false } // Sera exécuté à la sortie de la fonction login()
-                errorMessage = nil
         }
 }
