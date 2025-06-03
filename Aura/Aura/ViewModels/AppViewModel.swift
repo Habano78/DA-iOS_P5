@@ -13,14 +13,14 @@ class AppViewModel: ObservableObject {
         /// Propriété ajoutée  pour stocker le UserSession. Optionnel, car nil si non connecté
         @Published var activeUserSession: UserSession?
         
-        //MARK: Changement important : AccountDetailViewModel maintenant stocké et optionnel
-        // 'stockedAccountDetailViewModel' est publié pour que les vues puissent réagir à sa présence/absence.
+        //MARK: Changements importants : Contrairement à authentificationViewModel, AccountDetail et MoneyTransfer ViewModels deviennet de propriètés stockées et optionnelles. Le but de les déclarer ici est de les avoir
         @Published private(set) var stockedAccountDetailViewModel: AccountDetailViewModel?
+        @Published private(set) var stockedMoneyTransferViewModel: MoneyTransfertViewModel?
         
         //MARK: nouvelles propriétés d'instance qu'AppViewModel doit transmettre au correspondants viewmodels
         private let authService: AuthenticationServiceProtocol
         private let accountService: AccountServiceProtocol
-        private let transferService: TransfertServiceProtocol
+        private let transferService: TransferServiceProtocol
         
         //MARK: init
         init() {
@@ -48,13 +48,19 @@ class AppViewModel: ObservableObject {
                                         accountService: self.accountService,
                                         userSession: receivedUserSession // On passe la session reçue
                                 )
+                                
+                                self.stockedMoneyTransferViewModel = MoneyTransferViewModel(
+                                        transferService: self.transferService,
+                                        userSession: receivedUserSession
+                                )
                         }
                 )
         }
-        //MARK: cette fonction est activée par un geste de l'utilisateur "DECONEXION"
+        //MARK: cette fonction peut-être activée par un geste de l'utilisateur "DECONEXION"
         func logout() {
                 self.isLogged = false
                 self.activeUserSession = nil
+                self.stockedAccountDetailViewModel = nil
                 self.stockedAccountDetailViewModel = nil
         }
 }

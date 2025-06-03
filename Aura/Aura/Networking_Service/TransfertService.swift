@@ -9,17 +9,17 @@
 
 import Foundation
 
-protocol TransfertServiceProtocol {
+protocol TransferServiceProtocol {
         /// Tente d'exécuter un transfert d'argent.
         /// - Parameters:
         ///   - transferData: Les détails du transfert à effectuer (modèle de données interne).
         ///   - identifiant: La session utilisateur contenant le token d'authentification.
         /// - Throws: Une `APIServiceError` en cas d'échec.
         ///           Ne retourne rien (Void) en cas de succès, la confirmation vient du statut HTTP.
-        func executeTransfer(transferData: TransfertRequestData, identifiant: UserSession) async throws
+        func sendMoney(transferData: TransfertRequestData, identifiant: UserSession) async throws
 }
 
-class TransfertService: TransfertServiceProtocol {
+class TransfertService: TransferServiceProtocol {
         private let urlSession: URLSession                   // Instance pour exécuter les requêtes HTTP.
         private let jsonEncoder: JSONEncoder                 // Outil pour convertir les objets Swift en JSON pour le corps des requêtes.
         // Pas de jsonDecoder nécessaire ici pour le chemin de succès (réponse vide).
@@ -31,7 +31,7 @@ class TransfertService: TransfertServiceProtocol {
                 // Pour TransferRequestDTO, la configuration par défaut devrait suffire.
         }
         
-        func executeTransfer(transferData: TransfertRequestData, identifiant: UserSession) async throws {
+        func sendMoney(transferData: TransfertRequestData, identifiant: UserSession) async throws {
                 
                 // MARK: - Étape 1: Construction de l'URL
                 // Identique à AccountService: construction de l'URL complète pour l'endpoint "/account/transfer".
