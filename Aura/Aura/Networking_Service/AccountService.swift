@@ -22,14 +22,9 @@ class AccountService: AccountServiceProtocol{
                 self.jsonDecoder = JSONDecoder() // Crée une nouvelle instance de JSONDecoder par défaut
         }
         
+        //MARK: Implémentation de la méthode getAccountDetails 
         func getAccountDetails(identifiant: UserSession) async throws -> AccountDetails {
-                // Étape 1 : Construction de l'URL :où envoyer la requête
-                // Étape 2 : Création et configuration de l'objet URLRequest
-                // Étape 3 : Exécution de l'appel réseau
-                // Étape 4 : Vérification de la réponse HTTP
-                // Étape 5 : Décodage de la réponse JSON en DTO
-                // Étape 6 : Mapping du DTO en Modèle Métier et retour
-                
+               
                 //MARK: 1. Construction de l'URL final finalURL
                 ///1.1. On tente de créer un objet URL à partir de notre baseURLString (chaine).
                 /// Cet initialiseur retourne un URL? (un optionnel), car la chaîne pourrait être mal formée.

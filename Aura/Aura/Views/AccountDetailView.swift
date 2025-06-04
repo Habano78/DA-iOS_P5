@@ -8,71 +8,163 @@
 import SwiftUI
 
 struct AccountDetailView: View {
-    @ObservedObject var viewModel: AccountDetailViewModel
-    
-    var body: some View {
-        VStack(spacing: 20) {
-            // Large Header displaying total amount
-            VStack(spacing: 10) {
-                Text("Your Balance")
-                    .font(.headline)
-                Text(viewModel.totalAmount)
-                    .font(.system(size: 60, weight: .bold))
-                    .foregroundColor(Color(hex: "#94A684")) // Using the green color you provided
-                Image(systemName: "eurosign.circle.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 80)
-                    .foregroundColor(Color(hex: "#94A684"))
-            }
-            .padding(.top)
-            
-            // Display recent transactions
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Recent Transactions")
-                    .font(.headline)
-                    .padding([.horizontal])
-                ForEach(viewModel.recentTransactions, id: \.description) { transaction in
-                    HStack {
-                        Image(systemName: transaction.amount.contains("+") ? "arrow.up.right.circle.fill" : "arrow.down.left.circle.fill")
-                            .foregroundColor(transaction.amount.contains("+") ? .green : .red)
-                        Text(transaction.description)
-                        Spacer()
-                        Text(transaction.amount)
-                            .fontWeight(.bold)
-                            .foregroundColor(transaction.amount.contains("+") ? .green : .red)
-                    }
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
-                    .padding([.horizontal])
-                }
-            }
-            
-            // Button to see details of transactions
-            Button(action: {
-                // Implement action to show transaction details
-            }) {
-                HStack {
-                    Image(systemName: "list.bullet")
-                    Text("See Transaction Details")
-                }
-                .padding()
-                .background(Color(hex: "#94A684"))
-                .foregroundColor(.white)
-                .cornerRadius(8)
-            }
-            .padding([.horizontal, .bottom])
-            
-            Spacer()
-        }
-        .onTapGesture {
-                    self.endEditing(true)  // This will dismiss the keyboard when tapping outside
-                }
-    }
         
+        @ObservedObject var viewModel: AccountDetailViewModel
+        ///@State car SwiftUI reconstruit automatiquement les parties de la vue qui dépendent de cette propriété
+        @State private var showTransactionsList: Bool = false
+        
+        var body: some View {
+                //MARK: Group permet d'appliquer .onAppear à toute la logique conditionnelle
+                Group {
+                        // Affichage conditionnel basé sur isLoading
+                        if viewModel.isLoading {
+                                ProgressView("Chargement des détails du compte...")
+                                        .progressViewStyle(.circular)
+                        } // NOUVEAU: Sinon, s'il y a un message d'erreur...
+                        else if let errorMessage = viewModel.errorMessage {
+                                VStack(spacing: 20) { ///Conteneur pour l'erreur et le bouton
+                                        Text("Erreur") /// Un titre pour la section erreur
+                                                .font(.title2)
+                                                .foregroundColor(.red)
+                                        Text(errorMessage) /// Affiche le message d'erreur venant du ViewModel
+                                                .foregroundColor(.red)
+                                                .multilineTextAlignment(.center)
+                                                .padding(.horizontal)
+                                        
+                                        Button("Réessayer") { //Bouton pour relancer le chargement
+                                                Task {
+                                                        await viewModel.getAccountDetails()
+                                                }
+                                        }
+                                        .padding(.top)
+                                        .buttonStyle(.borderedProminent)
+                                }
+                                .padding() /// Ajoute un peu d'espace autour du contenu d'erreur
+                        } else {
+                                VStack(spacing: 20) {
+                                        /// Large Header displaying total amount
+                                        VStack(spacing: 10) {
+                                                Text("Your Balance")
+                                                        .font(.headline)
+                                                Text(viewModel.totalAmount, format: .currency(code: "EUR"))
+                                                        .font(.system(size: 60, weight: .bold))
+                                                        .foregroundColor(Color(hex: "#94A684"))
+                                                Image(systemName: "eurosign.circle.fill")
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .frame(height: 80)
+                                                        .foregroundColor(Color(hex: "#94A684"))
+                                        }
+                                        .padding(.top)
+                                        
+                                        // Display recent transactions
+                                        VStack(alignment: .leading, spacing: 10) {
+                                                Text("Recent Transactions")
+                                                        .font(.headline)
+                                                        .padding([.horizontal])
+                                                ForEach(viewModel.recentTransactions) { transaction in
+                                                        HStack {
+                                                                Image(systemName:
+                                                                        transaction.value >= 0
+                                                                      ? "arrow.up.right.circle.fill"
+                                                                      : "arrow.down.left.circle.fill"
+                                                                )
+                                                                .foregroundColor(
+                                                                        transaction.value >= 0 ? .green : .red
+                                                                )
+                                                                
+                                                                Text(transaction.label)
+                                                                Spacer()
+                                                                Text(transaction.value, format: .currency(code: "EUR"))
+                                                                        .fontWeight(.bold)
+                                                                        .foregroundColor(
+                                                                                transaction.value >= 0 ? .green : .red
+                                                                        )
+                                                        }
+                                                        .padding()
+                                                        .background(Color.gray.opacity(0.1))
+                                                        .cornerRadius(8)
+                                                        .padding([.horizontal])
+                                                }
+                                        }
+                                        
+                                        // lorsque l'utilisateur appuie sur ce bouton, la valeur de showTransactionsList passe à true.
+                                        Button(action: {
+                                                self.showTransactionsList = true
+                                                print("Bouton 'See Transaction Details' cliqué, showTransactionsList est maintenant: \(self.showTransactionsList)")
+                                        }) {
+                                                HStack {
+                                                        Image(systemName: "list.bullet")
+                                                        Text("See Transaction Details")
+                                                }
+                                                .padding()
+                                                .background(Color(hex: "#94A684"))
+                                                .foregroundColor(.white)
+                                                .cornerRadius(8)
+                                        }
+                                        .padding([.horizontal, .bottom])
+                                        
+                                        Spacer()
+                                }
+                        }
+                }
+                
+                .onAppear {
+                        Task {
+                                ///await pour appeler la fonction async
+                                await viewModel.getAccountDetails()
+                        }
+                }
+                //MARK: AJOUT DU MODIFICATEUR .sheet ICI, attaché au Group
+                .sheet(isPresented: $showTransactionsList) {
+                        ///On crée une instance de TransactionListViewModel.
+                        ///On lui passe les transactions actuellement détenues par AccountDetailViewModel.
+                        let transactionListVM = TransactionListViewModel(transactions: viewModel.recentTransactions)
+                        // On crée et retourne TransactionListView avec son ViewModel.
+                        NavigationStack {
+                                TransactionListView(viewModel: transactionListVM)
+                        }
+                }
+                .onTapGesture {
+                        self.endEditing(true)  // This will dismiss the keyboard when tapping outside
+                }
+        }
+}
+
+//MARK: SECTION PREVIEW MISE À JOUR
+// Définition du Mock Service (peut être dans un fichier séparé "Mocks.swift" plus tard)
+struct MockAccountService_ForAccountDetailViewPreview: AccountServiceProtocol {
+        func getAccountDetails(identifiant: UserSession) async throws -> AccountDetails {
+                // Simule un délai pour tester l'état de chargement
+                try? await Task.sleep(for: .seconds(1)) // Décommentez pour voir le ProgressView
+                
+                let exampleTransactions = [
+                        Transaction(value: Decimal(-4.20), label: "Preview Café"),
+                        Transaction(value: Decimal(300.00), label: "Preview Virement")
+                ]
+                // Pour tester une erreur :
+                // throw APIServiceError.networkError(URLError(.notConnectedToInternet))
+                return AccountDetails(
+                        totalAmount: exampleTransactions.reduce(Decimal(500)) { $0 + $1.value },
+                        transactions: exampleTransactions
+                )
+        }
 }
 
 #Preview {
-    AccountDetailView(viewModel: AccountDetailViewModel())
+        // Créez une instance du mock service
+        let mockService = MockAccountService_ForAccountDetailViewPreview()
+        // Créez une instance factice de UserSession
+        let dummyUserSession = UserSession(token: "PREVIEW_TOKEN_ACCOUNT_DETAIL")
+        
+        // Créez une instance de AccountDetailViewModel avec les mocks/données factices
+        let previewViewModel = AccountDetailViewModel(
+                accountService: mockService,
+                userSession: dummyUserSession
+        )
+        
+        // Pour tester l'état de chargement initial dans le preview :
+        // previewViewModel.isLoading = true
+        
+        return AccountDetailView(viewModel: previewViewModel)
 }

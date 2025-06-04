@@ -29,7 +29,7 @@ class AuthService: AuthenticationServiceProtocol {
         }
         
         func login(credentials: AuthRequestDTO) async throws -> UserSession {
-                // 1. Construction de l'URL complète pour l'endpoint "/auth".
+                //MARK: 1. Construction de l'URL complète pour l'endpoint "/auth".
                 guard let baseURL = URL(string: baseURL.baseURLString),
                       var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
                         throw APIServiceError.invalidURL // Lance une erreur si l'URL de base est invalide.
@@ -40,7 +40,7 @@ class AuthService: AuthenticationServiceProtocol {
                         throw APIServiceError.invalidURL // Lance une erreur si l'URL finale est invalide.
                 }
                 
-                // 2. Création et configuration de l'objet URLRequest.
+                //MARK: 2. Création et configuration de l'objet URLRequest.
                 var request = URLRequest(url: url)          // Crée la requête avec l'URL construite.
                 request.httpMethod = "POST"                 // Définit la méthode HTTP sur POST.
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type") // Indique que le corps est en JSON.

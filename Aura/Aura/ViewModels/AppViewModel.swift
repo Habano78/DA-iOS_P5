@@ -15,7 +15,7 @@ class AppViewModel: ObservableObject {
         
         //MARK: Changements importants : Contrairement à authentificationViewModel, AccountDetail et MoneyTransfer ViewModels deviennet de propriètés stockées et optionnelles. Le but de les déclarer ici est de les avoir
         @Published private(set) var stockedAccountDetailViewModel: AccountDetailViewModel?
-        @Published private(set) var stockedMoneyTransferViewModel: MoneyTransfertViewModel?
+        @Published private(set) var stockedMoneyTransferViewModel: MoneyTransferViewModel?
         
         //MARK: nouvelles propriétés d'instance qu'AppViewModel doit transmettre au correspondants viewmodels
         private let authService: AuthenticationServiceProtocol
