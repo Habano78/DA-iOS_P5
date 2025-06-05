@@ -16,6 +16,8 @@
 		225138AF2DED882000E96943 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138AE2DED882000E96943 /* APIConfiguration.swift */; };
 		225138B12DF014BE00E96943 /* TransactionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138B02DF014BE00E96943 /* TransactionListViewModel.swift */; };
 		225138B32DF0168600E96943 /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138B22DF0168600E96943 /* TransactionListView.swift */; };
+		225138B52DF0D0EE00E96943 /* TokenAuthWrapperStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138B42DF0D0EE00E96943 /* TokenAuthWrapperStore.swift */; };
+		225138B72DF1808B00E96943 /* KeyChainInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138B62DF1808B00E96943 /* KeyChainInterface.swift */; };
 		53D4187C2AC7099A0070ADB1 /* AuraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D4187B2AC7099A0070ADB1 /* AuraApp.swift */; };
 		53D418802AC7099B0070ADB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53D4187F2AC7099B0070ADB1 /* Assets.xcassets */; };
 		53D418832AC7099B0070ADB1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53D418822AC7099B0070ADB1 /* Preview Assets.xcassets */; };
@@ -40,6 +42,8 @@
 		225138AE2DED882000E96943 /* APIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfiguration.swift; sourceTree = "<group>"; };
 		225138B02DF014BE00E96943 /* TransactionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListViewModel.swift; sourceTree = "<group>"; };
 		225138B22DF0168600E96943 /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
+		225138B42DF0D0EE00E96943 /* TokenAuthWrapperStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenAuthWrapperStore.swift; sourceTree = "<group>"; };
+		225138B62DF1808B00E96943 /* KeyChainInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainInterface.swift; sourceTree = "<group>"; };
 		53D418782AC7099A0070ADB1 /* Aura.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aura.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53D4187B2AC7099A0070ADB1 /* AuraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuraApp.swift; sourceTree = "<group>"; };
 		53D4187F2AC7099B0070ADB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -87,6 +91,15 @@
 			path = Networking_Service;
 			sourceTree = "<group>";
 		};
+		225138B82DF1813800E96943 /* DataPersistence */ = {
+			isa = PBXGroup;
+			children = (
+				225138B62DF1808B00E96943 /* KeyChainInterface.swift */,
+				225138B42DF0D0EE00E96943 /* TokenAuthWrapperStore.swift */,
+			);
+			path = DataPersistence;
+			sourceTree = "<group>";
+		};
 		53D4186F2AC7099A0070ADB1 = {
 			isa = PBXGroup;
 			children = (
@@ -112,6 +125,7 @@
 				53D4188A2AC709B30070ADB1 /* ViewModels */,
 				53D418892AC709AD0070ADB1 /* Views */,
 				225138A52DEA023D00E96943 /* Networking_Service */,
+				225138B82DF1813800E96943 /* DataPersistence */,
 				53D4187F2AC7099B0070ADB1 /* Assets.xcassets */,
 				53D418812AC7099B0070ADB1 /* Preview Content */,
 			);
@@ -235,11 +249,13 @@
 				53D4189B2AC711990070ADB1 /* AuthenticationViewModel.swift in Sources */,
 				53D4189D2AC715AA0070ADB1 /* AccountDetailViewModel.swift in Sources */,
 				53D418912AC70A920070ADB1 /* AuthenticationView.swift in Sources */,
+				225138B52DF0D0EE00E96943 /* TokenAuthWrapperStore.swift in Sources */,
 				225138AD2DECB07E00E96943 /*  APIServiceError.swift in Sources */,
 				225138AB2DEA6F2400E96943 /* TransferService.swift in Sources */,
 				53D418932AC70AB10070ADB1 /* AccountDetailView.swift in Sources */,
 				53D4189F2AC717890070ADB1 /* MoneyTransferViewModel.swift in Sources */,
 				225138A12DE9DF7E00E96943 /* BusinnessModels.swift in Sources */,
+				225138B72DF1808B00E96943 /* KeyChainInterface.swift in Sources */,
 				53D4188D2AC709F40070ADB1 /* AppViewModel.swift in Sources */,
 				225138B12DF014BE00E96943 /* TransactionListViewModel.swift in Sources */,
 				53D418A12AC71B8F0070ADB1 /* View+Extensions.swift in Sources */,

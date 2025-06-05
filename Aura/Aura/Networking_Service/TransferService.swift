@@ -19,7 +19,7 @@ protocol TransferServiceProtocol {
         func sendMoney(transferData: TransfertRequestData, identifiant: UserSession) async throws
 }
 
-class TransfertService: TransferServiceProtocol {
+class TransferService: TransferServiceProtocol {
         private let urlSession: URLSession                   // Instance pour exécuter les requêtes HTTP.
         private let jsonEncoder: JSONEncoder                 // Outil pour convertir les objets Swift en JSON pour le corps des requêtes.
         // Pas de jsonDecoder nécessaire ici pour le chemin de succès (réponse vide).
