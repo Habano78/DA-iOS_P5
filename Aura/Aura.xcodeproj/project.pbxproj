@@ -18,9 +18,13 @@
 		225138B32DF0168600E96943 /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138B22DF0168600E96943 /* TransactionListView.swift */; };
 		225138B52DF0D0EE00E96943 /* TokenAuthWrapperStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138B42DF0D0EE00E96943 /* TokenAuthWrapperStore.swift */; };
 		225138B72DF1808B00E96943 /* KeyChainInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138B62DF1808B00E96943 /* KeyChainInterface.swift */; };
-		225138C12DF1D4B900E96943 /* AuraTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138C02DF1D4B900E96943 /* AuraTests.swift */; };
+		225138C12DF1D4B900E96943 /* AuthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138C02DF1D4B900E96943 /* AuthServiceTests.swift */; };
 		225138C92DF1D63100E96943 /* DTOsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138C82DF1D63100E96943 /* DTOsTests.swift */; };
 		225138CB2DF45FB500E96943 /* BusinessModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138CA2DF45FB500E96943 /* BusinessModelsTests.swift */; };
+		225138D02DF5989300E96943 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138CF2DF5989300E96943 /* MockURLSession.swift */; };
+		225138D22DF5ED3C00E96943 /* AccountServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138D12DF5ED3C00E96943 /* AccountServiceTest.swift */; };
+		225138D42DF6F2E700E96943 /* TransferServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138D32DF6F2E700E96943 /* TransferServiceTest.swift */; };
+		225138D62DF8E6CE00E96943 /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138D52DF8E6CE00E96943 /* URLSessionProtocol.swift */; };
 		53D4187C2AC7099A0070ADB1 /* AuraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D4187B2AC7099A0070ADB1 /* AuraApp.swift */; };
 		53D418802AC7099B0070ADB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53D4187F2AC7099B0070ADB1 /* Assets.xcassets */; };
 		53D418832AC7099B0070ADB1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53D418822AC7099B0070ADB1 /* Preview Assets.xcassets */; };
@@ -58,9 +62,13 @@
 		225138B42DF0D0EE00E96943 /* TokenAuthWrapperStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenAuthWrapperStore.swift; sourceTree = "<group>"; };
 		225138B62DF1808B00E96943 /* KeyChainInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainInterface.swift; sourceTree = "<group>"; };
 		225138BE2DF1D4B900E96943 /* AuraTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		225138C02DF1D4B900E96943 /* AuraTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuraTests.swift; sourceTree = "<group>"; };
+		225138C02DF1D4B900E96943 /* AuthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthServiceTests.swift; sourceTree = "<group>"; };
 		225138C82DF1D63100E96943 /* DTOsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTOsTests.swift; sourceTree = "<group>"; };
 		225138CA2DF45FB500E96943 /* BusinessModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessModelsTests.swift; sourceTree = "<group>"; };
+		225138CF2DF5989300E96943 /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		225138D12DF5ED3C00E96943 /* AccountServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountServiceTest.swift; sourceTree = "<group>"; };
+		225138D32DF6F2E700E96943 /* TransferServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferServiceTest.swift; sourceTree = "<group>"; };
+		225138D52DF8E6CE00E96943 /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
 		53D418782AC7099A0070ADB1 /* Aura.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aura.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53D4187B2AC7099A0070ADB1 /* AuraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuraApp.swift; sourceTree = "<group>"; };
 		53D4187F2AC7099B0070ADB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -109,8 +117,9 @@
 				225138A62DEA31DB00E96943 /* AuthService.swift */,
 				225138A82DEA458000E96943 /* AccountService.swift */,
 				225138AA2DEA6F2400E96943 /* TransferService.swift */,
-				225138AC2DECB07E00E96943 /*  APIServiceError.swift */,
 				225138AE2DED882000E96943 /* APIConfiguration.swift */,
+				225138AC2DECB07E00E96943 /*  APIServiceError.swift */,
+				225138D52DF8E6CE00E96943 /* URLSessionProtocol.swift */,
 			);
 			path = Networking_Service;
 			sourceTree = "<group>";
@@ -129,7 +138,10 @@
 			children = (
 				225138C82DF1D63100E96943 /* DTOsTests.swift */,
 				225138CA2DF45FB500E96943 /* BusinessModelsTests.swift */,
-				225138C02DF1D4B900E96943 /* AuraTests.swift */,
+				225138CF2DF5989300E96943 /* MockURLSession.swift */,
+				225138C02DF1D4B900E96943 /* AuthServiceTests.swift */,
+				225138D12DF5ED3C00E96943 /* AccountServiceTest.swift */,
+				225138D32DF6F2E700E96943 /* TransferServiceTest.swift */,
 			);
 			path = TestsAura;
 			sourceTree = "<group>";
@@ -310,9 +322,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				225138C12DF1D4B900E96943 /* AuraTests.swift in Sources */,
+				225138D42DF6F2E700E96943 /* TransferServiceTest.swift in Sources */,
+				225138C12DF1D4B900E96943 /* AuthServiceTests.swift in Sources */,
 				225138CB2DF45FB500E96943 /* BusinessModelsTests.swift in Sources */,
 				225138C92DF1D63100E96943 /* DTOsTests.swift in Sources */,
+				225138D02DF5989300E96943 /* MockURLSession.swift in Sources */,
+				225138D22DF5ED3C00E96943 /* AccountServiceTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,6 +351,7 @@
 				225138B72DF1808B00E96943 /* KeyChainInterface.swift in Sources */,
 				53D4188D2AC709F40070ADB1 /* AppViewModel.swift in Sources */,
 				225138B12DF014BE00E96943 /* TransactionListViewModel.swift in Sources */,
+				225138D62DF8E6CE00E96943 /* URLSessionProtocol.swift in Sources */,
 				53D418A12AC71B8F0070ADB1 /* View+Extensions.swift in Sources */,
 				225138B32DF0168600E96943 /* TransactionListView.swift in Sources */,
 				225138A92DEA458000E96943 /* AccountService.swift in Sources */,

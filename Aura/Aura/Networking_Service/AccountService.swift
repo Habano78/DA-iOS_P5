@@ -15,9 +15,9 @@ class AccountService: AccountServiceProtocol{
         
         //MARK: Définition des propriétés d'instance dont la classe a besoin.
         private let jsonDecoder: JSONDecoder
-        private let urlSession: URLSession
+        private let urlSession: URLSessionProtocol
         
-        init(urlSession: URLSession = .shared) {
+        init(urlSession: URLSessionProtocol = URLSession.shared) {
                 self.urlSession = urlSession // Assigne l'instance de URLSession (injectée ou par défaut)
                 self.jsonDecoder = JSONDecoder() // Crée une nouvelle instance de JSONDecoder par défaut
         }

@@ -45,7 +45,7 @@ struct DTOTests {
                 let decodedDictionary = try JSONDecoder().decode([String: String].self, from: jsonDATAEncoded)
                 
                 //On VÉRIFIE les valeurs du dictionnaire avec #expect.
-                #expect(jsonDATAEncoded.count == 2 )
+                #expect(decodedDictionary.count == 2 )
                 #expect(decodedDictionary["username"] == "testUser")
                 #expect(decodedDictionary["password"] == "testPassword")
         }

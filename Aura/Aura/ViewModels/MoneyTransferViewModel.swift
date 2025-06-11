@@ -65,7 +65,7 @@ class MoneyTransferViewModel: ObservableObject {
                 print("MoneyTransferViewModel: Validations du montant (numérique et positif) réussies. Montant Decimal: \(decimalAmount)")
                 
                 //MARK: Création de l'objet dataToTransfert. A partir d'ici les données sont prêts pour l'appel au service.
-                let  dataToTransfert = TransfertRequestData(recipient: self.recipient, amount: decimalAmount)
+                let  dataToTransfert = TransferRequestData(recipient: self.recipient, amount: decimalAmount)
                 print("MoneyTransferViewModel: TransfertRequestData créé: \(dataToTransfert)")
                 
                 //MARK: Appel au Service et gestion des résultats

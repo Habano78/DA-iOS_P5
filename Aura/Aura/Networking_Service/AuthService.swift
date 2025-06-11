@@ -18,11 +18,12 @@ protocol AuthenticationServiceProtocol {
 class AuthService: AuthenticationServiceProtocol {
         
         //MARK: Définition des propriétés d'instance dont la classe a besoin.
-        private let urlSession: URLSession                  // Instance pour exécuter les requêtes HTTP.
+        private let urlSession: URLSessionProtocol    /// Instance pour exécuter les requêtes HTTP qui dépend du protocole URLSession
+
         private let jsonEncoder: JSONEncoder                // Pour convertir les objets Swift en JSON
         private let jsonDecoder: JSONDecoder                // Pour convertir le JSON en objets Swift.
         
-        init(urlSession: URLSession = .shared) {
+        init(urlSession: URLSessionProtocol = URLSession.shared) {
                 self.urlSession = urlSession
                 self.jsonEncoder = JSONEncoder()
                 self.jsonDecoder = JSONDecoder()

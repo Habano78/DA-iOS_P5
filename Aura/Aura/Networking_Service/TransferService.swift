@@ -16,30 +16,30 @@ protocol TransferServiceProtocol {
         ///   - identifiant: La session utilisateur contenant le token d'authentification.
         /// - Throws: Une `APIServiceError` en cas d'échec.
         ///           Ne retourne rien (Void) en cas de succès, la confirmation vient du statut HTTP.
-        func sendMoney(transferData: TransfertRequestData, identifiant: UserSession) async throws
+        func sendMoney(transferData: TransferRequestData, identifiant: UserSession) async throws
 }
 
 class TransferService: TransferServiceProtocol {
-        private let urlSession: URLSession                   // Instance pour exécuter les requêtes HTTP.
+        private let urlSession: URLSessionProtocol                   // Instance pour exécuter les requêtes HTTP.
         private let jsonEncoder: JSONEncoder                 // Outil pour convertir les objets Swift en JSON pour le corps des requêtes.
         // Pas de jsonDecoder nécessaire ici pour le chemin de succès (réponse vide).
         
-        init(urlSession: URLSession = .shared) {
+        init(urlSession: URLSessionProtocol = URLSession.shared) {
                 self.urlSession = urlSession
                 self.jsonEncoder = JSONEncoder()
                 // Configurations pour jsonEncoder si besoin (ex: stratégies de clés/dates).
                 // Pour TransferRequestDTO, la configuration par défaut devrait suffire.
         }
         
-        func sendMoney(transferData: TransfertRequestData, identifiant: UserSession) async throws {
+        func sendMoney(transferData: TransferRequestData, identifiant: UserSession) async throws {
                 
                 // MARK: - Étape 1: Construction de l'URL
                 // Identique à AccountService: construction de l'URL complète pour l'endpoint "/account/transfer".
-                guard let baseURL = URL(string: baseURL.baseURLString) else {
+                guard let resolvedBaseURL = URL(string: baseURL.baseURLString) else {
                         print("TransferService: Erreur critique - baseURLString est invalide: \(baseURL.baseURLString)")
                         throw APIServiceError.invalidURL
                 }
-                var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
+                var components = URLComponents(url: resolvedBaseURL, resolvingAgainstBaseURL: true)
                 components?.path = "/account/transfer" // Endpoint spécifique pour le transfert.
                 
                 guard let url = components?.url else {
@@ -67,17 +67,30 @@ class TransferService: TransferServiceProtocol {
                 let requestDTO = TransferRequestDTO(recipient: transferData.recipient, amount: transferData.amount)
                 
                 // 2. Encoder le DTO en JSON.
+                // On utilise un bloc do-catch pour l'opération d'encodage qui peut échouer.
                 do {
+                        // Ici on encode le DTO en JSON pour assigner le résultat au corps de la requête.
+                        
                         request.httpBody = try self.jsonEncoder.encode(requestDTO)
+                        
                         print("TransferService: Corps de la requête encodé avec succès.")
                 } catch {
+                        // Si l'encodage échoue, on lance une erreur.
                         print("TransferService: Échec de l'encodage de TransferRequestDTO: \(error)")
                         throw APIServiceError.requestEncodingFailed(error)
                 }
                 
+                
+                // AJOUTEZ CETTE LIGNE DE DÉBOGAGE ICI :
+                print("--- DÉBOGAGE HTTP BODY ---")
+                print("Valeur de request.httpBody juste avant l'envoi : \(request.httpBody as Any)")
+                print("Taille du corps (en octets) : \(request.httpBody?.count ?? 0)")
+                print("--- FIN DÉBOGAGE ---")
+                
+                
                 // MARK: - Étape 4: Exécution de l'Appel Réseau
                 // Identique à AccountService: envoi de la requête et attente de la réponse.
-                let data: Data // 'data' sera reçu mais potentiellement vide pour une réponse 200 OK. was never used; consider removing it
+                // let data: Data // 'data' sera reçu mais potentiellement vide pour une réponse 200 OK. was never used; consider removing it
                 let response: URLResponse
                 do {
                         (_, response) = try await self.urlSession.data(for: request)
