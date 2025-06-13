@@ -27,3 +27,21 @@ class MockURLSession: URLSessionProtocol {
                 return try result.get()
         }
 }
+
+//MARK: pour tester invalidURL nous devons délibérément faire échouer l'encodeur.
+class MockJSONEncoder: JSONEncoderProtocol {
+    
+    struct MockEncodingError: Error {}
+    
+    // Si 'shouldThrowError' est true, la méthode encode lancera une erreur.
+    var shouldThrowError = false
+
+    func encode<T: Encodable>(_ value: T) throws -> Data {
+        if shouldThrowError {
+            // On lance notre erreur définie ci-dessus.
+            throw MockEncodingError()
+        }
+        // Si on ne doit pas échouer, on utilise le vrai encodeur pour retourner des données valides.
+        return try JSONEncoder().encode(value)
+    }
+}

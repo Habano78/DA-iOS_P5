@@ -21,10 +21,13 @@
 		225138C12DF1D4B900E96943 /* AuthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138C02DF1D4B900E96943 /* AuthServiceTests.swift */; };
 		225138C92DF1D63100E96943 /* DTOsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138C82DF1D63100E96943 /* DTOsTests.swift */; };
 		225138CB2DF45FB500E96943 /* BusinessModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138CA2DF45FB500E96943 /* BusinessModelsTests.swift */; };
-		225138D02DF5989300E96943 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138CF2DF5989300E96943 /* MockURLSession.swift */; };
+		225138D02DF5989300E96943 /* MOCKs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138CF2DF5989300E96943 /* MOCKs.swift */; };
 		225138D22DF5ED3C00E96943 /* AccountServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138D12DF5ED3C00E96943 /* AccountServiceTest.swift */; };
 		225138D42DF6F2E700E96943 /* TransferServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138D32DF6F2E700E96943 /* TransferServiceTest.swift */; };
 		225138D62DF8E6CE00E96943 /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138D52DF8E6CE00E96943 /* URLSessionProtocol.swift */; };
+		225138DA2DFAC0E900E96943 /* AuthenticationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138D92DFAC0E900E96943 /* AuthenticationViewModelTests.swift */; };
+		225138DC2DFAC1AD00E96943 /* MockAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138DB2DFAC1AD00E96943 /* MockAuthService.swift */; };
+		225138E12DFCB88F00E96943 /* JSONEncoderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138E02DFCB88F00E96943 /* JSONEncoderProtocol.swift */; };
 		53D4187C2AC7099A0070ADB1 /* AuraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D4187B2AC7099A0070ADB1 /* AuraApp.swift */; };
 		53D418802AC7099B0070ADB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53D4187F2AC7099B0070ADB1 /* Assets.xcassets */; };
 		53D418832AC7099B0070ADB1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53D418822AC7099B0070ADB1 /* Preview Assets.xcassets */; };
@@ -65,10 +68,13 @@
 		225138C02DF1D4B900E96943 /* AuthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthServiceTests.swift; sourceTree = "<group>"; };
 		225138C82DF1D63100E96943 /* DTOsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTOsTests.swift; sourceTree = "<group>"; };
 		225138CA2DF45FB500E96943 /* BusinessModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessModelsTests.swift; sourceTree = "<group>"; };
-		225138CF2DF5989300E96943 /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		225138CF2DF5989300E96943 /* MOCKs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOCKs.swift; sourceTree = "<group>"; };
 		225138D12DF5ED3C00E96943 /* AccountServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountServiceTest.swift; sourceTree = "<group>"; };
 		225138D32DF6F2E700E96943 /* TransferServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferServiceTest.swift; sourceTree = "<group>"; };
 		225138D52DF8E6CE00E96943 /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
+		225138D92DFAC0E900E96943 /* AuthenticationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModelTests.swift; sourceTree = "<group>"; };
+		225138DB2DFAC1AD00E96943 /* MockAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthService.swift; sourceTree = "<group>"; };
+		225138E02DFCB88F00E96943 /* JSONEncoderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONEncoderProtocol.swift; sourceTree = "<group>"; };
 		53D418782AC7099A0070ADB1 /* Aura.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aura.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53D4187B2AC7099A0070ADB1 /* AuraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuraApp.swift; sourceTree = "<group>"; };
 		53D4187F2AC7099B0070ADB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -119,7 +125,6 @@
 				225138AA2DEA6F2400E96943 /* TransferService.swift */,
 				225138AE2DED882000E96943 /* APIConfiguration.swift */,
 				225138AC2DECB07E00E96943 /*  APIServiceError.swift */,
-				225138D52DF8E6CE00E96943 /* URLSessionProtocol.swift */,
 			);
 			path = Networking_Service;
 			sourceTree = "<group>";
@@ -136,14 +141,31 @@
 		225138C72DF1D4FD00E96943 /* TestsAura */ = {
 			isa = PBXGroup;
 			children = (
+				225138D82DFAC0BC00E96943 /* ViewModelsTests */,
+				225138D72DFAC08B00E96943 /* ServiceTests */,
+			);
+			path = TestsAura;
+			sourceTree = "<group>";
+		};
+		225138D72DFAC08B00E96943 /* ServiceTests */ = {
+			isa = PBXGroup;
+			children = (
 				225138C82DF1D63100E96943 /* DTOsTests.swift */,
 				225138CA2DF45FB500E96943 /* BusinessModelsTests.swift */,
-				225138CF2DF5989300E96943 /* MockURLSession.swift */,
 				225138C02DF1D4B900E96943 /* AuthServiceTests.swift */,
 				225138D12DF5ED3C00E96943 /* AccountServiceTest.swift */,
 				225138D32DF6F2E700E96943 /* TransferServiceTest.swift */,
 			);
-			path = TestsAura;
+			path = ServiceTests;
+			sourceTree = "<group>";
+		};
+		225138D82DFAC0BC00E96943 /* ViewModelsTests */ = {
+			isa = PBXGroup;
+			children = (
+				225138D92DFAC0E900E96943 /* AuthenticationViewModelTests.swift */,
+				225138DB2DFAC1AD00E96943 /* MockAuthService.swift */,
+			);
+			path = ViewModelsTests;
 			sourceTree = "<group>";
 		};
 		53D4186F2AC7099A0070ADB1 = {
@@ -216,6 +238,9 @@
 			children = (
 				53D418982AC70FD80070ADB1 /* Color+Extensions.swift */,
 				53D418A02AC71B8F0070ADB1 /* View+Extensions.swift */,
+				225138CF2DF5989300E96943 /* MOCKs.swift */,
+				225138D52DF8E6CE00E96943 /* URLSessionProtocol.swift */,
+				225138E02DFCB88F00E96943 /* JSONEncoderProtocol.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -325,8 +350,10 @@
 				225138D42DF6F2E700E96943 /* TransferServiceTest.swift in Sources */,
 				225138C12DF1D4B900E96943 /* AuthServiceTests.swift in Sources */,
 				225138CB2DF45FB500E96943 /* BusinessModelsTests.swift in Sources */,
+				225138DA2DFAC0E900E96943 /* AuthenticationViewModelTests.swift in Sources */,
 				225138C92DF1D63100E96943 /* DTOsTests.swift in Sources */,
-				225138D02DF5989300E96943 /* MockURLSession.swift in Sources */,
+				225138DC2DFAC1AD00E96943 /* MockAuthService.swift in Sources */,
+				225138D02DF5989300E96943 /* MOCKs.swift in Sources */,
 				225138D22DF5ED3C00E96943 /* AccountServiceTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -346,6 +373,7 @@
 				225138AD2DECB07E00E96943 /*  APIServiceError.swift in Sources */,
 				225138AB2DEA6F2400E96943 /* TransferService.swift in Sources */,
 				53D418932AC70AB10070ADB1 /* AccountDetailView.swift in Sources */,
+				225138E12DFCB88F00E96943 /* JSONEncoderProtocol.swift in Sources */,
 				53D4189F2AC717890070ADB1 /* MoneyTransferViewModel.swift in Sources */,
 				225138A12DE9DF7E00E96943 /* BusinnessModels.swift in Sources */,
 				225138B72DF1808B00E96943 /* KeyChainInterface.swift in Sources */,
@@ -467,6 +495,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
 			};
 			name = Debug;
 		};
@@ -522,6 +551,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

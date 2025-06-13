@@ -7,7 +7,7 @@
 
 import Foundation
 
-// Ce protocole définit la seule fonctionnalité de URLSession que nos services utilisent :
+// Ce protocole définit la seule fonctionnalité de URLSession que les services utilisent :
 // la méthode data(for:).
 protocol URLSessionProtocol {
         func data(for request: URLRequest) async throws -> (Data, URLResponse)

@@ -53,7 +53,7 @@ struct AccountDetails {
         }
 }
 
-//MARK: Ce model sert à Représenter les informations nécessaires pour initier un transfert, telles qu'elles sont gérées ou validées au sein de l'application avant l'appel à l'API.
+//MARK: Informations nécessaires pour initier un transfert, telles qu'elles sont gérées ou validées au sein de l'application avant l'appel à l'API.
 struct TransferRequestData {
         let recipient: String
         let amount: Decimal

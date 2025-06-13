@@ -29,10 +29,8 @@ class AccountService: AccountServiceProtocol{
                 ///1.1. On tente de créer un objet URL à partir de notre baseURLString (chaine).
                 /// Cet initialiseur retourne un URL? (un optionnel), car la chaîne pourrait être mal formée.
                 guard let baseURL = URL(string: baseURL.baseURLString) else {
-                        print("AccountService: Erreur critique - baseURLString est invalide: \(baseURL.baseURLString)") // Pour le débogage
                         throw APIServiceError.invalidURL // On arrête la fonction et on lance notre erreur spécifique.
                 }
-                print("AccountService: baseURL construite avec succès: \(baseURL.absoluteString)")
                 ///1.2. Ajouter le chemin de l'endpoint (/account) à la baseURL
                 /// On crée une variable components et on initialise URLComponents en lui passant notre baseURL
                 var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
@@ -42,11 +40,10 @@ class AccountService: AccountServiceProtocol{
                 let finalUrlO = components?.url
                 ///Le guard vérifie si finalUrlO (l'optionnel) contient une valeur non-nil.
                 guard let finalURL = finalUrlO else {
-                        print("AccountService: Erreur critique - components est invalide")
                         throw APIServiceError.invalidURL
                 }/// À ce stade, finalURL est un URL valide et non-optionnel.
                 
-                //MARK: Étape 2 : Création et configuration de URLRequest.  Cet objet contiendra tous les détails de la requête que nous allons envoyer (la méthode HTTP, les en-têtes, et potentiellement un corps, bien que ce ne soit pas le cas pour un GET)
+                //Étape 2 : Création et configuration de URLRequest.  Cet objet contiendra tous les détails de la requête que nous allons envoyer (la méthode HTTP, les en-têtes...
                 
                 var request = URLRequest(url: finalURL) /// instance de URLRequest avec l'URL de destination.
                 request.httpMethod = "GET" /// La méthode HTTP de request est un  GET : recuperer des données
@@ -71,14 +68,11 @@ class AccountService: AccountServiceProtocol{
                         /// On enveloppe l'erreur système originale dans notre type d'erreur personnalisé.
                         throw APIServiceError.networkError(error)
                 }
-                
                 //MARK: Étape 4 : Vérification de la Réponse HTTP.
-                // Tente de convertir (caster) la URLResponse générique en une HTTPURLResponse plus spécifique.
+                // Convertir la URLResponse générique en une HTTPURLResponse plus spécifique.
                 // Cela nous donne accès à des informations HTTP comme le code de statut.
                 guard let httpResponse = response as? HTTPURLResponse else {
-                        // Si le cast échoue, la réponse n'est pas une réponse HTTP standard, ce qui est inattendu.
-                        print("AccountService: La réponse reçue n'est pas une réponse HTTP valide.")
-                        // On lance une erreur réseau, car c'est un problème fondamental avec la réponse du serveur.
+                        /// On lance une erreur réseau, car c'est un problème fondamental avec la réponse du serveur.
                         throw APIServiceError.networkError(URLError(.badServerResponse))
                 }
                 

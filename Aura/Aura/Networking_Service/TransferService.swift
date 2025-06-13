@@ -20,16 +20,14 @@ protocol TransferServiceProtocol {
 }
 
 class TransferService: TransferServiceProtocol {
-        private let urlSession: URLSessionProtocol                   // Instance pour exécuter les requêtes HTTP.
-        private let jsonEncoder: JSONEncoder                 // Outil pour convertir les objets Swift en JSON pour le corps des requêtes.
-        // Pas de jsonDecoder nécessaire ici pour le chemin de succès (réponse vide).
+        private let urlSession: URLSessionProtocol      /// Instance pour exécuter les requêtes HTTP.
+        private let jsonEncoder: JSONEncoderProtocol  /// La propriété dependa maintenant du JSONEncoderProtocol crée dans Outils
         
-        init(urlSession: URLSessionProtocol = URLSession.shared) {
+        init(urlSession: URLSessionProtocol = URLSession.shared,
+                 jsonEncoder: JSONEncoderProtocol = JSONEncoder()) {
                 self.urlSession = urlSession
-                self.jsonEncoder = JSONEncoder()
-                // Configurations pour jsonEncoder si besoin (ex: stratégies de clés/dates).
-                // Pour TransferRequestDTO, la configuration par défaut devrait suffire.
-        }
+                self.jsonEncoder = jsonEncoder
+            }
         
         func sendMoney(transferData: TransferRequestData, identifiant: UserSession) async throws {
                 
@@ -80,14 +78,6 @@ class TransferService: TransferServiceProtocol {
                         throw APIServiceError.requestEncodingFailed(error)
                 }
                 
-                
-                // AJOUTEZ CETTE LIGNE DE DÉBOGAGE ICI :
-                print("--- DÉBOGAGE HTTP BODY ---")
-                print("Valeur de request.httpBody juste avant l'envoi : \(request.httpBody as Any)")
-                print("Taille du corps (en octets) : \(request.httpBody?.count ?? 0)")
-                print("--- FIN DÉBOGAGE ---")
-                
-                
                 // MARK: - Étape 4: Exécution de l'Appel Réseau
                 // Identique à AccountService: envoi de la requête et attente de la réponse.
                 // let data: Data // 'data' sera reçu mais potentiellement vide pour une réponse 200 OK. was never used; consider removing it
@@ -96,7 +86,6 @@ class TransferService: TransferServiceProtocol {
                         (_, response) = try await self.urlSession.data(for: request)
                         print("TransferService: Réponse reçue du serveur.")
                 } catch {
-                        print("TransferService: Erreur réseau brute lors de l'appel à \(url.absoluteString): \(error.localizedDescription)")
                         throw APIServiceError.networkError(error)
                 }
                 
@@ -116,9 +105,6 @@ class TransferService: TransferServiceProtocol {
                                 print("TransferService: Erreur d'authentification/autorisation (statut \(httpResponse.statusCode)).")
                                 throw APIServiceError.tokenInvalidOrExpired
                         }
-                        // On pourrait ajouter ici la gestion d'autres codes d'erreur spécifiques au transfert
-                        // si l'API les documentait (ex: 400 Bad Request pour "fonds insuffisants" ou "destinataire invalide").
-                        // Pour l'instant, on les traite comme des erreurs inattendues.
                         else {
                                 print("TransferService: Erreur - Statut HTTP inattendu: \(httpResponse.statusCode).")
                                 // Note: La 'data' reçue avec un code d'erreur pourrait contenir un message JSON du serveur.

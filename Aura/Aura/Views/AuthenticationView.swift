@@ -85,25 +85,6 @@ struct AuthenticationView: View {
         
 }
 
-//MARK: Pour la Preview : AuthService de base ou un mock.
-// Et un callback onLoginSucceed vide ou qui print quelque chose.
-struct MockAuthService: AuthenticationServiceProtocol {
-        func login(credentials: AuthRequestDTO) async throws -> UserSession {
-                /// Simule un succès avec un faux token pour le preview
-                print("MockAuthService: login appelé dans le preview")
-                return UserSession(token: "FAKE_PREVIEW_TOKEN")
-        }
-}
-
-#Preview {
-        AuthenticationView(viewModel: AuthenticationViewModel(
-                authService: MockAuthService(), /// Fournir une instance de service
-                onLoginSucceed: { userSession in /// La closure attend un UserSession
-                        print("Preview: Login succeed callback! Token: \(userSession.token)")
-                }
-        ))
-}
-
 
 
 

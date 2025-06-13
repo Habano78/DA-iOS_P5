@@ -11,7 +11,7 @@ import Foundation
 class AppViewModel: ObservableObject {
         @Published var isLogged: Bool
         @Published var activeUserSession: UserSession? /// Propriété ajoutée  pour stocker le UserSession. Optionnel, car nil si non connecté
-        //MARK: Changements importants : Contrairement à authentificationViewModel, AccountDetail et MoneyTransfer ViewModels deviennet de propriètés stockées et optionnelles. Le but de les déclarer ici est de les avoir
+        //MARK: Changements importants : Contrairement à authentificationViewModel, AccountDetail et MoneyTransfer ViewModels deviennet de propriètés stockées et optionnelles. Le but de les déclarer ici est de les avoir 
         @Published private(set) var stockedAccountDetailViewModel: AccountDetailViewModel?
         @Published private(set) var stockedMoneyTransferViewModel: MoneyTransferViewModel?
         
@@ -77,13 +77,11 @@ class AppViewModel: ObservableObject {
                         onLoginSucceed: { [weak self] receivedUserSession in // Le callback reçoit UserSession
                                 guard let self = self else { return }
                                 
-                                print("AppViewModel: onLoginSucceed - Connexion réussie via le formulaire.")
-                                // (Optionnel mais recommandé) Sauvegarder le token dans le Keychain
+                                // Sauvegarder le token dans le Keychain
                                 do {
                                         try self.authTokenPersistence.saveToken(receivedUserSession.token)
                                         print("AppViewModel: Token sauvegardé dans le Keychain.")
                                 } catch {
-                                        print("AppViewModel: ERREUR lors de la sauvegarde du token dans le Keychain: \(error.localizedDescription)")
                                 }
                                 
                                 //MARK: Mise à jour de l'état de l'application
