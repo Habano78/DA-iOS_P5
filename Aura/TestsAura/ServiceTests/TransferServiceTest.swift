@@ -126,4 +126,55 @@ struct TransferServiceTests {
                         Issue.record("Une erreur inattendue a été lancée: \(error)")
                 }
         }
+        
+        
+        // À ajouter dans votre struct TransferServiceTests
+        
+        @Test("sendMoney avec une réponse non-HTTP lance .networkError")
+        func test_sendMoney_onNonHttpResponse_throwsNetworkError() async {
+                
+                // ARRANGE (Préparation)
+                ///On prépare une réponse qui n'est PAS une HTTPURLResponse.
+                let nonHttpResponse = URLResponse(
+                        url: self.transferURL,
+                        mimeType: nil,
+                        expectedContentLength: 0,
+                        textEncodingName: nil
+                )
+                
+                /// On crée le résultat que le mock doit retourner.
+                let nonHttpResult: Result<(Data, URLResponse), Error> = .success((Data(), nonHttpResponse))
+                
+                ///On crée notre MockURLSession avec ce résultat spécifique.
+                let mockUrlSession = MockURLSession(result: nonHttpResult)
+                
+                ///On crée le service à tester.
+                let transferService = TransferService(urlSession: mockUrlSession)
+                
+                // ACT & Vérifier
+                
+                let dummyData = TransferRequestData(recipient: "a", amount: 1)
+                let dummySession = UserSession(token: "any")
+                
+                do {
+                        _ = try await transferService.sendMoney(transferData: dummyData, identifiant: dummySession)
+                        Issue.record("La fonction sendMoney() aurait dû lancer une erreur, mais elle a réussi.")
+                        
+                } catch let error as APIServiceError {
+                        /// On vérifie que c'est bien le cas .networkError.
+                        if case .networkError(let underlyingError) = error {
+                                // Succès, c'est le bon cas d'erreur.
+                                
+                                // Vérification avancée : on s'assure que l'erreur sous-jacente
+                                // est bien celle que notre service a créée.
+                                let urlError = try? #require(underlyingError as? URLError)
+                                #expect(urlError?.code == .badServerResponse)
+                        } else {
+                                Issue.record("L'erreur attendue était .networkError, mais nous avons reçu \(error)")
+                        }
+                        
+                } catch {
+                        Issue.record("Une erreur inattendue a été lancée: \(error)")
+                }
+        }
 }

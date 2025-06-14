@@ -9,7 +9,7 @@ import Foundation
 
 // Ce protocole définit la seule fonctionnalité de URLSession que les services utilisent :
 // la méthode data(for:).
-protocol URLSessionProtocol {
+protocol URLSessionProtocol: Sendable {
         func data(for request: URLRequest) async throws -> (Data, URLResponse)
 }
 

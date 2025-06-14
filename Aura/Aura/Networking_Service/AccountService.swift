@@ -22,9 +22,9 @@ class AccountService: AccountServiceProtocol{
                 self.jsonDecoder = JSONDecoder() // Crée une nouvelle instance de JSONDecoder par défaut
         }
         
-        //MARK: Implémentation de la méthode getAccountDetails 
+        //MARK: Implémentation de la méthode getAccountDetails
         func getAccountDetails(identifiant: UserSession) async throws -> AccountDetails {
-               
+                
                 //MARK: 1. Construction de l'URL final finalURL
                 ///1.1. On tente de créer un objet URL à partir de notre baseURLString (chaine).
                 /// Cet initialiseur retourne un URL? (un optionnel), car la chaîne pourrait être mal formée.
@@ -76,8 +76,6 @@ class AccountService: AccountServiceProtocol{
                         throw APIServiceError.networkError(URLError(.badServerResponse))
                 }
                 
-                // Affiche le code de statut HTTP reçu pour le débogage.
-                print("AccountService: Code de statut HTTP reçu: \(httpResponse.statusCode)")
                 
                 // Vérifie si le code de statut indique un succès. Pour un GET qui retourne des données,
                 // le code de succès standard est 200 (OK).
@@ -85,11 +83,10 @@ class AccountService: AccountServiceProtocol{
                         // Si le code de statut n'est pas 200, il y a une erreur.
                         // On vérifie s'il s'agit d'une erreur d'authentification/autorisation connue.
                         if httpResponse.statusCode == 401 || httpResponse.statusCode == 403 { // 401: Non Autorisé, 403: Interdit
-                                print("AccountService: Erreur d'authentification ou d'autorisation (statut \(httpResponse.statusCode)). Token pourrait être invalide.")
+                                
                                 throw APIServiceError.tokenInvalidOrExpired
                         } else {
-                                // Pour tous les autres codes de statut HTTP qui ne sont pas 200.
-                                print("AccountService: Erreur - Statut HTTP inattendu: \(httpResponse.statusCode).")
+                                /// Pour tous les autres codes de statut HTTP qui ne sont pas 200.
                                 throw APIServiceError.unexpectedStatusCode(httpResponse.statusCode)
                         }
                 }
@@ -107,15 +104,9 @@ class AccountService: AccountServiceProtocol{
                         // ne correspondent pas à la structure de AccountDetailsDTO (ex: champ manquant, type incorrect).
                         accountDetailsDTO = try self.jsonDecoder.decode(AccountDetailsDTO.self, from: data)
                         
-                        // Si nous arrivons ici, le décodage a réussi.
-                        print("AccountService: AccountDetailsDTO décodé avec succès. Solde DTO: \(accountDetailsDTO.currentBalance)")
-                        
                 } catch {
                         // Si 'jsonDecoder.decode(...)' lance une erreur (typiquement une DecodingError),
                         // l'erreur est attrapée ici. 'error' contient l'erreur de décodage originale.
-                        print("AccountService: Échec du décodage de AccountDetailsDTO: \(error)") // Affiche l'erreur technique
-                        // Nous enveloppons l'erreur de décodage originale dans notre type d'erreur personnalisé
-                        // et nous la relançons pour que le ViewModel puisse la traiter.
                         throw APIServiceError.responseDecodingFailed(error)
                 } // À ce stade, 'accountDetailsDTO' contient les données du compte sous forme de DTO.
                 
@@ -126,10 +117,9 @@ class AccountService: AccountServiceProtocol{
                 // et la conversion de chaque 'TransactionDTO' en 'Transaction' (modèle métier).
                 let domainAccountDetails = AccountDetails(from: accountDetailsDTO)
                 
-                print("AccountService: Mapping de DTO vers AccountDetails (modèle métier) réussi.")
                 
                 // Retourne l'objet AccountDetails (modèle métier) qui est maintenant prêt
                 // à être utilisé par le ViewModel ou une autre partie de l'application.
-                return domainAccountDetails // (B)
+                return domainAccountDetails
         }
 }

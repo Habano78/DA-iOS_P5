@@ -70,35 +70,35 @@ enum APIServiceError: Error, LocalizedError, Equatable {
 
 //MARK: Le protocole Error lui-même n'est pas Equatable. Swift ne sait donc pas comment comparer deux erreurs génériques pour savoir si elles sont égales.
 extension APIServiceError {
-    static func == (lhs: APIServiceError, rhs: APIServiceError) -> Bool {
-        switch (lhs, rhs) {
-        // Pour les cas sans valeur associée, on vérifie juste si c'est le même cas.
-        case (.invalidURL, .invalidURL):
-            return true
-        case (.invalidCredentials, .invalidCredentials):
-            return true
-        case (.tokenInvalidOrExpired, .tokenInvalidOrExpired):
-            return true
-            
-        // Pour les cas avec des valeurs associées 'Equatable' (comme Int), on compare les valeurs.
-        case (.unexpectedStatusCode(let lhsCode), .unexpectedStatusCode(let rhsCode)):
-            return lhsCode == rhsCode
-            
-        // Pour les cas avec des valeurs associées non-'Equatable' (comme Error),
-        // on ne peut pas comparer les erreurs elles-mêmes (error1 == error2).
-        // Pour nos tests, il est souvent suffisant de considérer que si deux erreurs
-        // sont du même cas (par exemple, deux .networkError), elles sont "égales"
-        // pour la vérification du test.
-        case (.requestEncodingFailed, .requestEncodingFailed):
-            return true
-        case (.responseDecodingFailed, .responseDecodingFailed):
-            return true
-        case (.networkError, .networkError):
-            return true
-            
-        // Si aucune des paires ci-dessus ne correspond, les erreurs ne sont pas égales.
-        default:
-            return false
+        static func == (lhs: APIServiceError, rhs: APIServiceError) -> Bool {
+                switch (lhs, rhs) {
+                        // Pour les cas sans valeur associée, on vérifie juste si c'est le même cas.
+                case (.invalidURL, .invalidURL):
+                        return true
+                case (.invalidCredentials, .invalidCredentials):
+                        return true
+                case (.tokenInvalidOrExpired, .tokenInvalidOrExpired):
+                        return true
+                        
+                        // Pour les cas avec des valeurs associées 'Equatable' (comme Int), on compare les valeurs.
+                case (.unexpectedStatusCode(let lhsCode), .unexpectedStatusCode(let rhsCode)):
+                        return lhsCode == rhsCode
+                        
+                        // Pour les cas avec des valeurs associées non-'Equatable' (comme Error),
+                        // on ne peut pas comparer les erreurs elles-mêmes (error1 == error2).
+                        // Pour nos tests, il est souvent suffisant de considérer que si deux erreurs
+                        // sont du même cas (par exemple, deux .networkError), elles sont "égales"
+                        // pour la vérification du test.
+                case (.requestEncodingFailed, .requestEncodingFailed):
+                        return true
+                case (.responseDecodingFailed, .responseDecodingFailed):
+                        return true
+                case (.networkError, .networkError):
+                        return true
+                        
+                        // Si aucune des paires ci-dessus ne correspond, les erreurs ne sont pas égales.
+                default:
+                        return false
+                }
         }
-    }
 }

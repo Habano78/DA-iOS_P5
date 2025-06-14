@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class AuthenticationViewModel: ObservableObject {
         
         @Published var username: String = ""

@@ -12,13 +12,13 @@ protocol AuthenticationServiceProtocol {
         /// - Parameter credentials: Les informations d'identification (DTO de requête).
         /// - Returns: Une `UserSession` (modèle métier) en cas de succès.
         /// - Throws: Une erreur si l'authentification échoue ou si un problème réseau survient.
+        @MainActor
         func login(credentials: AuthRequestDTO) async throws -> UserSession
 }
-
 class AuthService: AuthenticationServiceProtocol {
         
         //MARK: Définition des propriétés d'instance dont la classe a besoin.
-        private let urlSession: URLSessionProtocol    /// Instance pour exécuter les requêtes HTTP qui dépend du protocole URLSession
+        private nonisolated let urlSession: URLSessionProtocol  /// Instance pour exécuter les requêtes HTTP qui dépend du protocole URLSession
 
         private let jsonEncoder: JSONEncoder                // Pour convertir les objets Swift en JSON
         private let jsonDecoder: JSONDecoder                // Pour convertir le JSON en objets Swift.
@@ -57,9 +57,9 @@ class AuthService: AuthenticationServiceProtocol {
                 let data: Data
                 let response: URLResponse
                 
-                // 4. Exécution de l'appel réseau asynchrone.
+                //Exécution de l'appel réseau asynchrone.
                 do {
-                        (data, response) = try await urlSession.data(for: request) // Effectue l'appel et attend la réponse.
+                        (data, response) = try await urlSession.data(for: request)
                 } catch {
                         throw APIServiceError.networkError(error) // Lance une erreur en cas de problème réseau.
                 }
