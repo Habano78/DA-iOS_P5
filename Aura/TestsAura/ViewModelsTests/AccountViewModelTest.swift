@@ -13,14 +13,20 @@ import Foundation
 private class MockAccountService: AccountServiceProtocol {
         
         /// On peut configurer ce mock pour qu'il retourne un succès ou une erreur.
-        var getDetailsResult: Result<AccountDetails, APIServiceError>
+        var getDetailsResult: Result<AccountDetails, any Error>
         
-        init(result: Result<AccountDetails, APIServiceError>) {
+        /// Ces propriétés "espions" nous permettent de vérifier si et comment la méthode a été appelée.
+        var getDetailsCallCount = 0
+        var receivedUserSession: UserSession?
+        
+        init(result: Result<AccountDetails, any Error>) {
                 self.getDetailsResult = result
         }
         
         func getAccountDetails(identifiant: UserSession) async throws -> AccountDetails {
-                // Retourne le résultat prédéfini.
+                /// Quand la méthode getDetails est appelée :
+                getDetailsCallCount += 1               // On incrémente le compteur d'appels.
+                receivedUserSession = identifiant // On sauvegarde les credentials reçus pour vérification.// Retourne le résultat prédéfini.
                 return try getDetailsResult.get()
         }
 }
@@ -51,7 +57,10 @@ struct AccountDetailViewModelTests {
                 // d. Créer l'instance du ViewModel à tester (le SUT).
                 let viewModel = AccountDetailViewModel(
                         accountService: mockService,
-                        userSession: dummyUserSession
+                        userSession: dummyUserSession,
+                        onSessionExpired: {
+                                Issue.record("onSessionExpired a été appelé par erreur")
+                        }
                 )
                 
                 // Pré-vérification (optionnel) : s'assurer que l'état initial est correct
@@ -89,7 +98,10 @@ struct AccountDetailViewModelTests {
                 /// instance du ViewModel à tester (le SUT).
                 let viewModel = AccountDetailViewModel(
                         accountService: mockService,
-                        userSession: dummyUserSession
+                        userSession: dummyUserSession,
+                        onSessionExpired: {
+                                Issue.record("onSessionExpired a été appelé par erreur")
+                        }
                 )
                 
                 ///valeurs initiales des données pour vérifier qu'elles ne changent pas en cas d'erreur.
@@ -110,5 +122,26 @@ struct AccountDetailViewModelTests {
                 ///Vérifier que les données n'ont pas été modifiées.
                 #expect(viewModel.totalAmount == initialAmount, "totalAmount ne devrait pas avoir changé en cas d'erreur.")
                 #expect(viewModel.recentTransactions == initialTransactions, "recentTransactions ne devrait pas avoir changé en cas d'erreur.")
+        }
+        //MARK: erreur générique
+        @Test("getAccountDetails() en cas d'erreur inattendue, affiche un message générique")
+        func test_getAccountDetails_onUnexpectedError_setsGenericErrorMessage() async {
+                //ARRANGE
+                struct CustomError: Error {}
+                let unexpectedError = CustomError()
+                let mockService = MockAccountService(result: .failure(unexpectedError))
+                
+                let viewModel = AccountDetailViewModel(
+                        accountService: mockService,
+                        userSession: UserSession(token: "test"),
+                        onSessionExpired: { Issue.record("onSessionExpired ne devrait pas être appelé.") }
+                )
+                
+                //ACT
+                await viewModel.getAccountDetails()
+                
+                //ASSERT
+                #expect(viewModel.errorMessage == "Une erreur inattendue est survenue.")
+                #expect(mockService.getDetailsCallCount == 1)
         }
 }

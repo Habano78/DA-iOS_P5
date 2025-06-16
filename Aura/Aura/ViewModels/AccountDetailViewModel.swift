@@ -24,9 +24,13 @@ class AccountDetailViewModel: ObservableObject {
         private let accountService: AccountServiceProtocol
         private let userSession: UserSession
         
-        init(accountService: AccountServiceProtocol, userSession: UserSession) {
+        ///Callback pour signaler l'expiration de la session (suite au problème rencontré)
+        private let onSessionExpired: () -> Void
+        //Initialiseur
+        init(accountService: AccountServiceProtocol, userSession: UserSession, onSessionExpired: @escaping () -> Void) {
                 self.accountService = accountService
                 self.userSession = userSession
+                self.onSessionExpired = onSessionExpired
         }
         
         // La méthode pour charger les détails du compte reste la même.
@@ -56,3 +60,4 @@ class AccountDetailViewModel: ObservableObject {
 //2. change on Transaction properties names : value/amount and label/description
 //3. change in values type for Decimal
 //4. change in totalAmount type from String to Decimal.
+//5. Annonce d'expiration de session

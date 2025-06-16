@@ -14,14 +14,14 @@ private class MockTransferService: TransferServiceProtocol {
         
         /// On peut configurer ce mock pour qu'il retourne un succès ou une erreur.
         /// Pour le succès, le type est Void, car la méthode ne retourne rien.
-        var sendMoneyResult: Result<Void, APIServiceError>
+        var sendMoneyResult: Result<Void, any Error>
         
         // "Espions" pour vérifier les interactions
         private(set) var sendMoneyCallCount = 0
         private(set) var receivedTransferData: TransferRequestData?
         private(set) var receivedUserSession: UserSession?
         
-        init(result: Result<Void, APIServiceError>) {
+        init(result: Result<Void, any Error>) {
                 self.sendMoneyResult = result
         }
         
@@ -80,8 +80,8 @@ struct TransferViewModeltest {
                 #expect(mockService.receivedUserSession?.token == dummyUserSession.token, "La session utilisateur envoyée au service est incorrecte.")
         }
         
-        //MARK: Cas d'échec 1 : échec de la validation locale. L'utilisateur appuie sur "Send" mais les données qu'il a saisies sont invalides (par exemple, un champ est vide, ou le montant n'est pas un nombre.
-        @Test
+        //MARK: Cas d'échec 2,3 et 4 : échec de la validation locale. L'utilisateur appuie sur "Send" mais les données qu'il a saisies sont invalides : le champ vide, ou le montant n'est pas un nombre.
+        @Test("L'utilisateur ne saisie pas de destinataire")
         func testSendMoney_onEmptyRecipient_setsErrorMessageAndDoesNotCallService() async {
                 //ARRANGE
                 let mockTransferService = MockTransferService(result: .success(()))
@@ -95,6 +95,55 @@ struct TransferViewModeltest {
                 #expect(viewModel.errorMessage == "Please enter a recipient")
                 #expect(mockTransferService.sendMoneyCallCount == 0)
         }
+        @Test("Le champ amount est Vide")
+        func sendMoney_onEmptyAmount_setsErrorMessageAndDoesNotCallService() async {
+                //ARRANGE
+                let mockTransferService = MockTransferService(result: .success(()))
+                let userSession = UserSession (token: "Token")
+                let viewModel = MoneyTransferViewModel(
+                        transferService: mockTransferService,
+                        userSession: userSession)
+                /// On simule ici la saisie utilisateur avec l'erreur
+                viewModel.recipient = "mon@email.com"
+                viewModel.amount = ""/// erreur à simuler : saisie vide.
+                //ACT
+                await viewModel.sendMoney()
+                //ASSERT
+                #expect(viewModel.errorMessage == "Please enter an amount.")
+                #expect(mockTransferService.sendMoneyCallCount == 0)
+        }
+        @Test("Le champ amount n'est pas un nombre")
+        func sendMoney_onWrongNumberAmount_setsErrorMessageAndDoesNotCallService() async {
+                let mockTransferService = MockTransferService(result: .success(()))
+                let userSession = UserSession (token: "Token")
+                let viewModel = MoneyTransferViewModel(
+                        transferService: mockTransferService,
+                        userSession: userSession)
+                /// On simule ici la saisie utilisateur avec l'erreur
+                viewModel.recipient = "mon@email.com"
+                viewModel.amount = "UUUu"/// erreur à simuler : la saisie n'est pas un nombre.
+                //ACT
+                await viewModel.sendMoney()
+                //ASSERT
+                #expect(viewModel.errorMessage == "Invalid amount format.")
+                #expect(mockTransferService.sendMoneyCallCount == 0)
+        }
+        @Test("Le montant du transfert doit être supérieur à zéro.")
+        func sendMoney_onNegatifOrZeroAmount_setsErrorMessageAndDoesNotCallService() async {
+                let mockTransferService = MockTransferService(result: .success(()))
+                let userSession = UserSession (token: "Token")
+                let viewModel = MoneyTransferViewModel(
+                        transferService: mockTransferService,
+                        userSession: userSession)
+                ///saisie simulée
+                viewModel.recipient = "mon@email.com"
+                viewModel.amount = "-30"/// erreur à simuler : la saisie n'est pas un nombre.
+                //ACT
+                await viewModel.sendMoney()
+                //ASSERT
+                #expect(viewModel.errorMessage == "Le montant du transfert doit être supérieur à zéro.")
+                #expect(mockTransferService.sendMoneyCallCount == 0)
+        }
         
         //MARK: Cas d'échec 2 : échec de l'appel au service. L'utilisateur saisit des données valides, mais le service lui-même échoue (par exemple, le token est expiré, ou il y a une panne réseau).
         @Test("sendMoney() en cas d'échec du service, met à jour le message d'erreur")
@@ -105,8 +154,7 @@ struct TransferViewModeltest {
                 let userSession = UserSession (token: "Token")
                 let viewModel = MoneyTransferViewModel(
                         transferService: mockTransferService,
-                        userSession: userSession
-                )
+                        userSession: userSession)
                 /// On simule ici la saisie utilisateur
                 viewModel.recipient = "mon@truc.com"
                 viewModel.amount = "100"
@@ -121,5 +169,33 @@ struct TransferViewModeltest {
                 #expect(viewModel.isLoading == false)
                 #expect(viewModel.recipient.isEmpty == false) /// Les champs ne sont pas vidés en cas d'échec
                 #expect(viewModel.amount.isEmpty == false)
+        }
+        
+        //MARK: Test pour une erreur inattendue
+        @Test("sendMoney() en cas d'erreur inattendue, affiche un message générique")
+        func testSendMoney_onUnexpectedError_setsGenericErrorMessage() async {
+                // --- ARRANGE ---
+                ///On définit une erreur personnalisée qui n'est PAS une APIServiceError
+                struct CustomError: Error {}
+                let unexpectedError = CustomError()
+                
+                ///2. On configure le mock pour qu'il lance cette erreur
+                let mockService = MockTransferService(result: .failure(unexpectedError))
+                
+                let viewModel = MoneyTransferViewModel(
+                        transferService: mockService,
+                        userSession: UserSession(token: "test")
+                )
+                viewModel.recipient = "ami@valide.com"
+                viewModel.amount = "100"
+                
+                // --- ACT ---
+                await viewModel.sendMoney()
+                
+                // --- ASSERT ---
+                // On vérifie que le message d'erreur est bien celui du bloc 'catch' générique
+                #expect(viewModel.errorMessage == "Échec du transfert : une erreur est survenue lors du transfert.")
+                #expect(viewModel.successMessage == nil)
+                #expect(mockService.sendMoneyCallCount == 1)
         }
 }

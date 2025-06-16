@@ -32,7 +32,7 @@ class AuthService: AuthenticationServiceProtocol {
                 //MARK: 1. Construction de l'URL complète pour l'endpoint "/auth".
                 guard let baseURL = URL(string: baseURL.baseURLString),
                       var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
-                        throw APIServiceError.invalidURL // Lance une erreur si l'URL de base est invalide.
+                        throw APIServiceError.invalidURL // Lance une erreur si l'x de base est invalide.
                 }
                 components.path = "/auth" // Ajoute le chemin spécifique de l'endpoint.
                 

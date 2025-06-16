@@ -13,14 +13,14 @@ import Foundation
 private class MockAuthService: AuthenticationServiceProtocol {
         
         // On peut configurer ce mock pour qu'il retourne un succès ou une erreur.
-        var loginResult: Result<UserSession, APIServiceError>
+        var loginResult: Result<UserSession, any Error>
         
         /// Ces propriétés "espions" nous permettent de vérifier si et comment la méthode a été appelée.
         var loginCallCount = 0
         var receivedCredentials: AuthRequestDTO?
         
         // Initialiseur pour définir le comportement du mock pour un test donné.
-        init(result: Result<UserSession, APIServiceError>) {
+        init(result: Result<UserSession, any Error>) {
                 self.loginResult = result
         }
         
@@ -66,28 +66,28 @@ struct AuthenticationViewModelTests {
                         onLoginSucceed: successCallback
                 )
                 
-                // e. Simuler la saisie de l'utilisateur dans les champs de la vue.
+                //Simuler la saisie de l'utilisateur dans les champs de la vue.
                 viewModel.username = "test@user.com"
                 viewModel.password = "password123"
                 
-                // --- 2. ACT (Agir) ---
+                //ACT (Agir) ---
                 
                 // On appelle la seule méthode que l'on veut tester.
                 await viewModel.login()
                 
-                // --- 3. ASSERT (Vérifier) ---
+                // ASSERT (Vérifier) ---
                 // On vérifie que tout s'est passé comme prévu après l'action.
                 
                 // a. Vérifier les états finaux du ViewModel.
                 #expect(viewModel.isLoading == false, "isLoading devrait être false après l'appel.")
                 #expect(viewModel.errorMessage == nil, "errorMessage devrait être nil en cas de succès.")
                 
-                // b. Vérifier que le ViewModel a bien interagi avec le service.
+                // Vérifier que le ViewModel a bien interagi avec le service.
                 #expect(mockService.loginCallCount == 1, "La méthode login du service aurait dû être appelée une seule fois.")
                 #expect(mockService.receivedCredentials?.username == "test@user.com", "Le username envoyé au service est incorrect.")
                 #expect(mockService.receivedCredentials?.password == "password123", "Le mot de passe envoyé au service est incorrect.")
                 
-                // c. Vérifier que le callback de succès a été appelé avec les bonnes données.
+                // Vérifier que le callback de succès a été appelé avec les bonnes données.
                 #expect(wasCallbackCalled == true, "Le callback onLoginSucceed aurait dû être appelé.")
                 #expect(receivedSession?.token == expectedUserSession.token, "Le UserSession reçu par le callback est incorrect.")
         }
@@ -134,5 +134,30 @@ struct AuthenticationViewModelTests {
                 
                 // d. Vérifier que le service a quand même été appelé.
                 #expect(mockService.loginCallCount == 1, "La méthode login du service aurait dû être appelée une fois.")
+        }
+        
+        //MARK: Test pour une erreur inattendue
+        @Test("login() en cas d'erreur inattendue, affiche un message générique")
+        func testLogin_onUnexpectedError_setsGenericErrorMessage() async {
+                // --- ARRANGE ---
+                ///On définit une erreur personnalisée qui n'est PAS une APIServiceError
+                struct CustomError: Error {}
+                let unexpectedError = CustomError()
+                let mockService = MockAuthService(result: .failure(unexpectedError))
+                
+                ///Créer l'instance du ViewModel à tester.
+                let viewModel = AuthenticationViewModel(
+                        authService: mockService,
+                        onLoginSucceed: {_ in Issue.record("Le callback de succès ne devrait pas être appelé.") }
+                )
+                viewModel.username = "user"
+                viewModel.password = "Password"
+                
+                //ACT
+                await viewModel.login()
+                
+                //ASSERT
+                #expect(viewModel.errorMessage == "Erreur inattendue.Veuillez réessayer.")
+                #expect(mockService.loginCallCount == 1)
         }
 }

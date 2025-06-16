@@ -46,10 +46,7 @@ class MoneyTransferViewModel: ObservableObject {
                         errorMessage = "Please enter an amount."
                         return
                 }
-                /// Si nous arrivons ici, c'est que self.recipient et self.amount ne sont pas vides.
-                print("MoneyTransferViewModel: Validations initiales (champs non vides) réussies.")
-                
-                // Convertion de amout String en Decimal.Remplacer la virgule par un point.
+                /// Convertion de amout String en Decimal.Remplacer la virgule par un point.
                 guard let decimalAmount = Decimal(string: amount.replacingOccurrences(of: ",", with: ".")) else {
                         errorMessage = "Invalid amount format."
                         return /// arret de la fonction si la converstion échoue
@@ -61,9 +58,6 @@ class MoneyTransferViewModel: ObservableObject {
                         errorMessage = "Le montant du transfert doit être supérieur à zéro."
                         return
                 }
-                /// Si nous arrivons ici, 'recipient' est non vide, et 'decimalAmount' est valide et positif.
-                print("MoneyTransferViewModel: Validations du montant (numérique et positif) réussies. Montant Decimal: \(decimalAmount)")
-                
                 //MARK: Création de l'objet dataToTransfert. A partir d'ici les données sont prêts pour l'appel au service.
                 let  dataToTransfert = TransferRequestData(recipient: self.recipient, amount: decimalAmount)
                 print("MoneyTransferViewModel: TransfertRequestData créé: \(dataToTransfert)")
@@ -81,12 +75,10 @@ class MoneyTransferViewModel: ObservableObject {
                         
                 } catch let error as APIServiceError {
                         /// Erreur APIServiceError attrapée depuis le service
-                        print("MoneyTransferViewModel: Échec du transfert - APIServiceError: \(error.localizedDescription)")
                         self.errorMessage = error.errorDescription // Utilise la description de notre enum
                 } catch {
                         /// Toute autre erreur inattendue
-                        print("MoneyTransferViewModel: Échec du transfert - Erreur inattendue: \(error.localizedDescription)")
-                        self.errorMessage = "Une erreur inattendue est survenue lors du transfert."
+                        self.errorMessage = "Échec du transfert : une erreur est survenue lors du transfert."
                 }
         }
 }
