@@ -10,25 +10,20 @@
 import Foundation
 
 protocol TransferServiceProtocol {
-        /// Tente d'exécuter un transfert d'argent.
-        /// - Parameters:
-        ///   - transferData: Les détails du transfert à effectuer (modèle de données interne).
-        ///   - identifiant: La session utilisateur contenant le token d'authentification.
-        /// - Throws: Une `APIServiceError` en cas d'échec.
-        ///           Ne retourne rien (Void) en cas de succès, la confirmation vient du statut HTTP.
+       @MainActor
         func sendMoney(transferData: TransferRequestData, identifiant: UserSession) async throws
 }
 
 class TransferService: TransferServiceProtocol {
-        private let urlSession: URLSessionProtocol      /// Instance pour exécuter les requêtes HTTP.
-        private let jsonEncoder: JSONEncoderProtocol  /// La propriété dependa maintenant du JSONEncoderProtocol crée dans Outils
+        private nonisolated let urlSession: URLSessionProtocol /// Permet d'appeler ses méthodes (qui s'exécutent en arrière-plan) depuis un contexte @MainActor sans avertissement de data race.
+        private let jsonEncoder: JSONEncoderProtocol
         
         init(urlSession: URLSessionProtocol = URLSession.shared,
                  jsonEncoder: JSONEncoderProtocol = JSONEncoder()) {
                 self.urlSession = urlSession
                 self.jsonEncoder = jsonEncoder
             }
-        
+        @MainActor
         func sendMoney(transferData: TransferRequestData, identifiant: UserSession) async throws {
                 
                 // MARK: - Étape 1: Construction de l'URL

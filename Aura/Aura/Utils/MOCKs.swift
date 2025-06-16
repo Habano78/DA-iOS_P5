@@ -63,28 +63,7 @@ class MockJSONEncoder: JSONEncoderProtocol {
         }
 }
 
-//MARK: fausse version d'AuthService. Ce MOCK permet de contrôler entièrement le résultat de l'appel à login() pendant les tests, sans faire de vrais appels réseau.
-class MockAuthService: AuthenticationServiceProtocol {
-        
-        // On peut configurer ce mock pour qu'il retourne un succès ou une erreur.
-        var loginResult: Result<UserSession, APIServiceError>
-        
-        /// Ces propriétés "espions" nous permettent de vérifier si et comment la méthode a été appelée.
-        var loginCallCount = 0
-        var receivedCredentials: AuthRequestDTO?
-        
-        // Initialiseur pour définir le comportement du mock pour un test donné.
-        init(result: Result<UserSession, APIServiceError>) {
-                self.loginResult = result
-        }
-        
-        func login(credentials: AuthRequestDTO) async throws -> UserSession {
-                // Quand la méthode login est appelée :
-                loginCallCount += 1               // On incrémente le compteur d'appels.
-                receivedCredentials = credentials // On sauvegarde les credentials reçus pour vérification.
-                
-                // On retourne le résultat prédéfini (soit le UserSession, soit l'erreur).
-                return try loginResult.get()
-        }
-}
+
+
+
 

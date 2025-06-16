@@ -1,0 +1,125 @@
+//
+//  TransferViewModeltest.swift
+//  AuraTests
+//
+//  Created by Perez William on 14/06/2025.
+//
+
+import Testing
+@testable import Aura
+import Foundation
+
+//MARK: Ce MOck nous permet de contrôler le résultat de l'appel à sendMoney().
+private class MockTransferService: TransferServiceProtocol {
+        
+        /// On peut configurer ce mock pour qu'il retourne un succès ou une erreur.
+        /// Pour le succès, le type est Void, car la méthode ne retourne rien.
+        var sendMoneyResult: Result<Void, APIServiceError>
+        
+        // "Espions" pour vérifier les interactions
+        private(set) var sendMoneyCallCount = 0
+        private(set) var receivedTransferData: TransferRequestData?
+        private(set) var receivedUserSession: UserSession?
+        
+        init(result: Result<Void, APIServiceError>) {
+                self.sendMoneyResult = result
+        }
+        
+        func sendMoney(transferData: TransferRequestData, identifiant: UserSession) async throws {
+                sendMoneyCallCount += 1
+                receivedTransferData = transferData
+                receivedUserSession = identifiant
+                return try sendMoneyResult.get() /// .get() sur un Result<Void, Error> ne retourne rien si c'est un succès,  ou lance l'erreur si c'est un échec.
+        }
+}
+
+//MARK: TESTs
+@Suite(.serialized)
+@MainActor
+struct TransferViewModeltest {
+        
+        //MARK: ce test verifie que viewModel.sendMoney() est appelé avec des données valides, et que le TransferService réussit.
+        @Test("sendMoney_onSuccess_updatesProperties")
+        func test_getAccountDetails_onSuccess_updatesStateAndClearsFields() async {
+                
+                //ARRANGE
+                ///1. preparation de la réponse de MockService
+                let mockService = MockTransferService(result: .success(())) /// un suscces est Result<Void>
+                ///2. préparer un usersession factice
+                let dummyUserSession = UserSession (token: "dummyToken")
+                ///3. Créer l'instance du viewModel a tester
+                let viewModel = MoneyTransferViewModel(
+                        transferService: mockService,
+                        userSession: dummyUserSession
+                )
+                ///4. simuler la saisie de l'utilisateur
+                let recipient = "ami@example.com"
+                let amountString = "50,25" // On simule la saisie avec une virgule
+                let expectedAmountDecimal = Decimal(50.25)
+                
+                viewModel.recipient = recipient
+                viewModel.amount = amountString
+                
+                //ACT
+                await viewModel.sendMoney()
+                
+                //ASSERT
+                ///Vérifier les états finaux du ViewModel.
+                #expect(viewModel.isLoading == false, "isLoading devrait être false après l'appel.")
+                #expect(viewModel.errorMessage == nil, "errorMessage devrait être nil en cas de succès.")
+                #expect(viewModel.successMessage != nil, "Un message de succès était attendu.")
+                
+                ///Vérifier que les champs de saisie ont été réinitialisés après le succès.
+                #expect(viewModel.recipient.isEmpty, "Le champ 'recipient' aurait dû être vidé.")
+                #expect(viewModel.amount.isEmpty, "Le champ 'amount' aurait dû être vidé.")
+                
+                ///Vérifier que le service a été appelé correctement (grâce à nos "espions").
+                #expect(mockService.sendMoneyCallCount == 1, "La méthode sendMoney du service aurait dû être appelée une seule fois.")
+                #expect(mockService.receivedTransferData?.recipient == recipient, "Le destinataire envoyé au service est incorrect.")
+                #expect(mockService.receivedTransferData?.amount == expectedAmountDecimal, "Le montant envoyé au service est incorrect.")
+                #expect(mockService.receivedUserSession?.token == dummyUserSession.token, "La session utilisateur envoyée au service est incorrecte.")
+        }
+        
+        //MARK: Cas d'échec 1 : échec de la validation locale. L'utilisateur appuie sur "Send" mais les données qu'il a saisies sont invalides (par exemple, un champ est vide, ou le montant n'est pas un nombre.
+        @Test
+        func testSendMoney_onEmptyRecipient_setsErrorMessageAndDoesNotCallService() async {
+                //ARRANGE
+                let mockTransferService = MockTransferService(result: .success(()))
+                let userSession = UserSession (token: "Token")
+                let viewModel = MoneyTransferViewModel(transferService: mockTransferService, userSession: userSession)
+                viewModel.recipient = "" /// erreur à simuler : saisie vide.
+                viewModel.amount = "100"
+                //ACT
+                await viewModel.sendMoney()
+                //ASSERT
+                #expect(viewModel.errorMessage == "Please enter a recipient")
+                #expect(mockTransferService.sendMoneyCallCount == 0)
+        }
+        
+        //MARK: Cas d'échec 2 : échec de l'appel au service. L'utilisateur saisit des données valides, mais le service lui-même échoue (par exemple, le token est expiré, ou il y a une panne réseau).
+        @Test("sendMoney() en cas d'échec du service, met à jour le message d'erreur")
+        func testSendMoney_onServiceFailure_updatesErrorMessage() async {
+                //ARANGE
+                let error = APIServiceError.unexpectedStatusCode(500)
+                let mockTransferService = MockTransferService(result: .failure(error))
+                let userSession = UserSession (token: "Token")
+                let viewModel = MoneyTransferViewModel(
+                        transferService: mockTransferService,
+                        userSession: userSession
+                )
+                /// On simule ici la saisie utilisateur
+                viewModel.recipient = "mon@truc.com"
+                viewModel.amount = "100"
+                
+                //ACT
+                await viewModel.sendMoney()
+                
+                //ASSERt
+                #expect(mockTransferService.sendMoneyCallCount == 1) /// Le service a bien été appelé
+                #expect(viewModel.errorMessage == error.errorDescription) /// Le bon message d'erreur est affiché
+                #expect(viewModel.successMessage == nil) /// Pas de message de succès
+                #expect(viewModel.isLoading == false)
+                #expect(viewModel.recipient.isEmpty == false) /// Les champs ne sont pas vidés en cas d'échec
+                #expect(viewModel.amount.isEmpty == false)
+        }
+}

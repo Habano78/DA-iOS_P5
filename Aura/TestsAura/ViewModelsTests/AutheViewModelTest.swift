@@ -8,11 +8,38 @@ import Testing
 @testable import Aura
 import Foundation
 
-//MARK:
+//MARK: Ce MOCK(fausse version d'AuthService) nous permet de contrôler entièrement le résultat de l'appel à login() pendant les tests, sans faire de vrais appels réseau.
+
+private class MockAuthService: AuthenticationServiceProtocol {
+        
+        // On peut configurer ce mock pour qu'il retourne un succès ou une erreur.
+        var loginResult: Result<UserSession, APIServiceError>
+        
+        /// Ces propriétés "espions" nous permettent de vérifier si et comment la méthode a été appelée.
+        var loginCallCount = 0
+        var receivedCredentials: AuthRequestDTO?
+        
+        // Initialiseur pour définir le comportement du mock pour un test donné.
+        init(result: Result<UserSession, APIServiceError>) {
+                self.loginResult = result
+        }
+        
+        func login(credentials: AuthRequestDTO) async throws -> UserSession {
+                // Quand la méthode login est appelée :
+                loginCallCount += 1               // On incrémente le compteur d'appels.
+                receivedCredentials = credentials // On sauvegarde les credentials reçus pour vérification.
+                
+                // On retourne le résultat prédéfini (soit le UserSession, soit l'erreur).
+                return try loginResult.get()
+        }
+}
+
+//MARK: TESTs
+@Suite(.serialized)
+@MainActor
 struct AuthenticationViewModelTests {
         
         @Test("login() en cas de succès, met à jour les états et appelle le callback")
-        @MainActor // @MainActor car le test modifie des @Published var
         func testLogin_onSuccess_updatesStateAndCallsCallback() async {
                 
                 //ARRANGE
@@ -66,14 +93,12 @@ struct AuthenticationViewModelTests {
         }
         //MARK: on verifie ici que si le service lance une erreur, le ViewModel met bien à jour errorMessage et isLoading, et n'appelle pas le callback de succès.
         @Test("login() en cas d'échec, met à jour le message d'erreur")
-        @MainActor
         func testLogin_onFailure_updatesErrorMessage() async {
                 
                 // ARRANGE
                 ///Préparer le résultat d'échec que le mock retournera.
                 let expectedError = APIServiceError.invalidCredentials
                 let mockService = MockAuthService(result: .failure(expectedError))
-                
                 /// Préparer un "espion" pour vérifier que le callback de succès n'est PAS appelé.
                 var wasSuccessCallbackCalled = false
                 let successCallback: (UserSession) -> Void = { _ in
@@ -96,7 +121,6 @@ struct AuthenticationViewModelTests {
                 await viewModel.login()
                 
                 // ASSERT
-                
                 ///Vérifier les états finaux du ViewModel.
                 #expect(viewModel.isLoading == false, "isLoading devrait être false après l'appel.")
                 #expect(wasSuccessCallbackCalled == false, "Le callback de succès a été appelé par erreur.")
@@ -111,5 +135,4 @@ struct AuthenticationViewModelTests {
                 // d. Vérifier que le service a quand même été appelé.
                 #expect(mockService.loginCallCount == 1, "La méthode login du service aurait dû être appelée une fois.")
         }
-        // Nous ajouterons le test pour le cas d'échec ici...
 }

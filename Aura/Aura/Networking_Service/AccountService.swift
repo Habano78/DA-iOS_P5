@@ -8,6 +8,7 @@
 import Foundation
 
 protocol AccountServiceProtocol{
+        @MainActor
         func getAccountDetails(identifiant: UserSession) async throws -> AccountDetails
 }
 
@@ -15,14 +16,15 @@ class AccountService: AccountServiceProtocol{
         
         //MARK: Définition des propriétés d'instance dont la classe a besoin.
         private let jsonDecoder: JSONDecoder
-        private let urlSession: URLSessionProtocol
+        private nonisolated let urlSession: URLSessionProtocol
         
         init(urlSession: URLSessionProtocol = URLSession.shared) {
-                self.urlSession = urlSession // Assigne l'instance de URLSession (injectée ou par défaut)
-                self.jsonDecoder = JSONDecoder() // Crée une nouvelle instance de JSONDecoder par défaut
+                self.urlSession = urlSession
+                self.jsonDecoder = JSONDecoder()
         }
         
         //MARK: Implémentation de la méthode getAccountDetails
+        @MainActor
         func getAccountDetails(identifiant: UserSession) async throws -> AccountDetails {
                 
                 //MARK: 1. Construction de l'URL final finalURL

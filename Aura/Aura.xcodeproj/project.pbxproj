@@ -27,6 +27,8 @@
 		225138D62DF8E6CE00E96943 /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138D52DF8E6CE00E96943 /* URLSessionProtocol.swift */; };
 		225138DA2DFAC0E900E96943 /* AutheViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138D92DFAC0E900E96943 /* AutheViewModelTest.swift */; };
 		225138E12DFCB88F00E96943 /* JSONEncoderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138E02DFCB88F00E96943 /* JSONEncoderProtocol.swift */; };
+		225138E82DFDBE2000E96943 /* AccountViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138E72DFDBE2000E96943 /* AccountViewModelTest.swift */; };
+		225138EA2DFDF5E100E96943 /* TransferViewModeltest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138E92DFDF5E100E96943 /* TransferViewModeltest.swift */; };
 		53D4187C2AC7099A0070ADB1 /* AuraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53D4187B2AC7099A0070ADB1 /* AuraApp.swift */; };
 		53D418802AC7099B0070ADB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53D4187F2AC7099B0070ADB1 /* Assets.xcassets */; };
 		53D418832AC7099B0070ADB1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53D418822AC7099B0070ADB1 /* Preview Assets.xcassets */; };
@@ -73,6 +75,8 @@
 		225138D52DF8E6CE00E96943 /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
 		225138D92DFAC0E900E96943 /* AutheViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutheViewModelTest.swift; sourceTree = "<group>"; };
 		225138E02DFCB88F00E96943 /* JSONEncoderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONEncoderProtocol.swift; sourceTree = "<group>"; };
+		225138E72DFDBE2000E96943 /* AccountViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModelTest.swift; sourceTree = "<group>"; };
+		225138E92DFDF5E100E96943 /* TransferViewModeltest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferViewModeltest.swift; sourceTree = "<group>"; };
 		53D418782AC7099A0070ADB1 /* Aura.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aura.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53D4187B2AC7099A0070ADB1 /* AuraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuraApp.swift; sourceTree = "<group>"; };
 		53D4187F2AC7099B0070ADB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -161,6 +165,8 @@
 			isa = PBXGroup;
 			children = (
 				225138D92DFAC0E900E96943 /* AutheViewModelTest.swift */,
+				225138E72DFDBE2000E96943 /* AccountViewModelTest.swift */,
+				225138E92DFDF5E100E96943 /* TransferViewModeltest.swift */,
 			);
 			path = ViewModelsTests;
 			sourceTree = "<group>";
@@ -350,6 +356,8 @@
 				225138DA2DFAC0E900E96943 /* AutheViewModelTest.swift in Sources */,
 				225138C92DF1D63100E96943 /* DTOsTests.swift in Sources */,
 				225138D02DF5989300E96943 /* MOCKs.swift in Sources */,
+				225138E82DFDBE2000E96943 /* AccountViewModelTest.swift in Sources */,
+				225138EA2DFDF5E100E96943 /* TransferViewModeltest.swift in Sources */,
 				225138D22DF5ED3C00E96943 /* AccountServiceTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

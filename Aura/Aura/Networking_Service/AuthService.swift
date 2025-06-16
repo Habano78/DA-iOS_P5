@@ -9,7 +9,6 @@ import Foundation
 
 protocol AuthenticationServiceProtocol {
         /// Tente d'authentifier l'utilisateur avec les identifiants fournis.
-        /// - Parameter credentials: Les informations d'identification (DTO de requête).
         /// - Returns: Une `UserSession` (modèle métier) en cas de succès.
         /// - Throws: Une erreur si l'authentification échoue ou si un problème réseau survient.
         @MainActor

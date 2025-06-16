@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class MoneyTransferViewModel: ObservableObject {
         @Published var recipient: String = ""
         @Published var transferMessage: String = ""
@@ -28,7 +29,6 @@ class MoneyTransferViewModel: ObservableObject {
         }
         
         //MARK: Constructuion de la fonction
-        @MainActor
         func sendMoney()async {
                 isLoading = true
                 defer {isLoading = false}
@@ -38,7 +38,7 @@ class MoneyTransferViewModel: ObservableObject {
                 //MARK: Verification du Destinataire et Amount (conversion de String en Decimal et > 0)
                 ///// trimmingCh... retire les espaces vides au début et à la fin avant de vérifier si c'est vide.
                 guard !recipient.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                        errorMessage = "Please enter a recipient."
+                        errorMessage = "Please enter a recipient"
                         return /// // Si 'recipient' est vide ou ne contient que des espaces, la fonction S'ARRETE ICI.
                 }
                 //Verification du montant (amount type String)
