@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: Authentication Model. Représenter la session active de l'utilisateur au sein de l'application.
-struct UserSession {
+struct UserSession: Equatable{
         let token: String
 }
 

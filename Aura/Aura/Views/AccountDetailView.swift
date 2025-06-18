@@ -10,6 +10,10 @@ import SwiftUI
 struct AccountDetailView: View {
         
         @ObservedObject var viewModel: AccountDetailViewModel
+        
+        ///cette  accès à l'AppViewModel permet d'appeler logout()
+        @EnvironmentObject var appViewModel: AppViewModel
+        
         ///@State car SwiftUI reconstruit automatiquement les parties de la vue qui dépendent de cette propriété
         @State private var showTransactionsList: Bool = false
         
@@ -20,7 +24,7 @@ struct AccountDetailView: View {
                         if viewModel.isLoading {
                                 ProgressView("Chargement des détails du compte...")
                                         .progressViewStyle(.circular)
-                        } // NOUVEAU: Sinon, s'il y a un message d'erreur...
+                        } // Sinon, s'il y a un message d'erreur...
                         else if let errorMessage = viewModel.errorMessage {
                                 VStack(spacing: 20) { ///Conteneur pour l'erreur et le bouton
                                         Text("Erreur") /// Un titre pour la section erreur
@@ -36,14 +40,14 @@ struct AccountDetailView: View {
                                                         await viewModel.getAccountDetails()
                                                 }
                                         }
-                                        .padding(.top)
+                                        .padding()
                                         .buttonStyle(.borderedProminent)
                                 }
                                 .padding() /// Ajoute un peu d'espace autour du contenu d'erreur
                         } else {
-                                ScrollView {
+                                ScrollView { /// On enveloppe le contenu dans une ScrollView
                                         VStack(spacing: 20) {
-                                                /// Large Header displaying total amount
+                                                /// Contenu avec le solde et la liste des transactions)
                                                 VStack(spacing: 10) {
                                                         Text("Your Balance")
                                                                 .font(.headline)
@@ -64,7 +68,7 @@ struct AccountDetailView: View {
                                                                 .font(.headline)
                                                                 .padding([.horizontal])
                                                         ForEach(viewModel.recentTransactions) { transaction in
-                                                                HStack {
+                                                                HStack {/// HStack pour une seule transaction)
                                                                         Image(systemName:
                                                                                 transaction.value >= 0
                                                                               ? "arrow.up.right.circle.fill"
@@ -90,10 +94,7 @@ struct AccountDetailView: View {
                                                 }
                                                 
                                                 // lorsque l'utilisateur appuie sur ce bouton, la valeur de showTransactionsList passe à true.
-                                                Button(action: {
-                                                        self.showTransactionsList = true
-                                                        print("Bouton 'See Transaction Details' cliqué, showTransactionsList est maintenant: \(self.showTransactionsList)")
-                                                }) {
+                                                Button(action: { self.showTransactionsList = true }) {
                                                         HStack {
                                                                 Image(systemName: "list.bullet")
                                                                 Text("See Transaction Details")
@@ -104,13 +105,20 @@ struct AccountDetailView: View {
                                                         .cornerRadius(8)
                                                 }
                                                 .padding([.horizontal, .bottom])
-                                                
-                                                Spacer()
+                                        }
+                                } /// Fin de la ScrollView
+                                //MARK: Ces modificateurs, attachés à la ScrollView la NavigationStack parente (dans MainTabView) les utilisera pour afficher la barre.
+                                .navigationTitle("Mon Compte")
+                                .toolbar {
+                                        ToolbarItem(placement: .navigationBarTrailing) {
+                                                Button("Déconnexion", role: .destructive) {
+                                                        // Action : appelle la méthode logout de AppViewModel
+                                                        appViewModel.logout()
+                                                }
                                         }
                                 }
                         }
                 }
-                
                 .onAppear {
                         Task {
                                 ///await pour appeler la fonction async
@@ -126,9 +134,6 @@ struct AccountDetailView: View {
                         NavigationStack {
                                 TransactionListView(viewModel: transactionListVM)
                         }
-                }
-                .onTapGesture {
-                        self.endEditing(true)  // This will dismiss the keyboard when tapping outside
                 }
         }
 }

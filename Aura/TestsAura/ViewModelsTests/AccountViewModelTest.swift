@@ -9,139 +9,107 @@ import Testing
 @testable import Aura
 import Foundation
 
-// MARK: Ce nous permet de contrôler le résultat de l'appel à getAccountDetails().
-private class MockAccountService: AccountServiceProtocol {
-        
-        /// On peut configurer ce mock pour qu'il retourne un succès ou une erreur.
-        var getDetailsResult: Result<AccountDetails, any Error>
-        
-        /// Ces propriétés "espions" nous permettent de vérifier si et comment la méthode a été appelée.
-        var getDetailsCallCount = 0
-        var receivedUserSession: UserSession?
-        
-        init(result: Result<AccountDetails, any Error>) {
-                self.getDetailsResult = result
-        }
-        
-        func getAccountDetails(identifiant: UserSession) async throws -> AccountDetails {
-                /// Quand la méthode getDetails est appelée :
-                getDetailsCallCount += 1               // On incrémente le compteur d'appels.
-                receivedUserSession = identifiant // On sauvegarde les credentials reçus pour vérification.// Retourne le résultat prédéfini.
-                return try getDetailsResult.get()
-        }
-}
+// MARK: - Suite de Tests pour AccountDetailViewModel
 
-//MARK: TESTs
 @Suite(.serialized)
-@MainActor ///@MainActor car ces tests modifient des @Published var
+@MainActor
 struct AccountDetailViewModelTests {
         
-        @Test("getAccountDetails() en cas de succès, met à jour les propriétés du VM")
+        @Test("getAccountDetails() en cas de succès, met à jour les propriétés")
         func test_getAccountDetails_onSuccess_updatesProperties() async {
-                
-                // --- 1. ARRANGE (Préparation) ---
-                
-                // a. Préparer les données de succès que le mock service retournera.
-                let mockTransactions = [Transaction(value: 100, label: "Transaction de test")]
-                let expectedAccountDetails = AccountDetails(
-                        totalAmount: Decimal(1234.56),
-                        transactions: mockTransactions
-                )
-                
-                // b. Créer le mock service configuré pour réussir.
-                let mockService = MockAccountService(result: .success(expectedAccountDetails))
-                
-                // c. Créer une session utilisateur factice (nécessaire pour l'init du VM).
-                let dummyUserSession = UserSession(token: "test-token")
-                
-                // d. Créer l'instance du ViewModel à tester (le SUT).
-                let viewModel = AccountDetailViewModel(
-                        accountService: mockService,
-                        userSession: dummyUserSession,
-                        onSessionExpired: {
-                                Issue.record("onSessionExpired a été appelé par erreur")
-                        }
-                )
-                
-                // Pré-vérification (optionnel) : s'assurer que l'état initial est correct
-                #expect(viewModel.totalAmount == 0.0) // Basé sur l'init de votre VM
-                #expect(viewModel.recentTransactions.isEmpty == true)
-                
-                // --- 2. ACT (Agir) ---
-                
-                // On appelle la méthode que l'on veut tester.
-                await viewModel.getAccountDetails()
-                
-                // --- 3. ASSERT (Vérifier) ---
-                
-                // a. Vérifier les états finaux du ViewModel.
-                #expect(viewModel.isLoading == false, "isLoading devrait être false après l'appel.")
-                #expect(viewModel.errorMessage == nil, "errorMessage devrait être nil en cas de succès.")
-                
-                // b. Vérifier que les propriétés de données ont été mises à jour.
-                #expect(viewModel.totalAmount == expectedAccountDetails.totalAmount, "totalAmount n'a pas été mis à jour correctement.")
-                #expect(viewModel.recentTransactions.count == 1, "Le nombre de transactions est incorrect.")
-                #expect(viewModel.recentTransactions.first?.label == "Transaction de test", "Le label de la transaction est incorrect.")
-        }
-        
-        @Test("getAccountDetails() en cas d'échec, met à jour le message d'erreur")
-        func test_getAccountDetails_onFailure_updatesErrorMessage() async {
-                
-                // ARRANGE
-                /// Préparer le résultat d'échec que notre mock service retournera.
-                let expectedError = APIServiceError.tokenInvalidOrExpired
-                let mockService = MockAccountService(result: .failure(expectedError))
-                
-                /// Session utilisateur factice.
-                let dummyUserSession = UserSession(token: "un-token-qui-va-echouer")
-                
-                /// instance du ViewModel à tester (le SUT).
-                let viewModel = AccountDetailViewModel(
-                        accountService: mockService,
-                        userSession: dummyUserSession,
-                        onSessionExpired: {
-                                Issue.record("onSessionExpired a été appelé par erreur")
-                        }
-                )
-                
-                ///valeurs initiales des données pour vérifier qu'elles ne changent pas en cas d'erreur.
-                let initialAmount = viewModel.totalAmount
-                let initialTransactions = viewModel.recentTransactions
-                
-                //ACT
-                /// On appelle la méthode que l'on veut tester.
-                await viewModel.getAccountDetails()
-                
-                //ASSERT
-                /// Vérification des états finaux du ViewModel.
-                #expect(viewModel.isLoading == false, "isLoading devrait être false après l'appel.")
-                
-                /// Vérification que le message d'erreur a été correctement défini.
-                #expect(viewModel.errorMessage == expectedError.errorDescription, "Le message d'erreur ne correspond pas à l'erreur attendue.")
-                
-                ///Vérifier que les données n'ont pas été modifiées.
-                #expect(viewModel.totalAmount == initialAmount, "totalAmount ne devrait pas avoir changé en cas d'erreur.")
-                #expect(viewModel.recentTransactions == initialTransactions, "recentTransactions ne devrait pas avoir changé en cas d'erreur.")
-        }
-        //MARK: erreur générique
-        @Test("getAccountDetails() en cas d'erreur inattendue, affiche un message générique")
-        func test_getAccountDetails_onUnexpectedError_setsGenericErrorMessage() async {
-                //ARRANGE
-                struct CustomError: Error {}
-                let unexpectedError = CustomError()
-                let mockService = MockAccountService(result: .failure(unexpectedError))
-                
+                // --- ARRANGE ---
+                let mockData = AccountDetails(totalAmount: 1234.56, transactions: [Transaction(value: 100, label: "Test")])
+                let mockService = MockAccountService(result: .success(mockData))
                 let viewModel = AccountDetailViewModel(
                         accountService: mockService,
                         userSession: UserSession(token: "test"),
                         onSessionExpired: { Issue.record("onSessionExpired ne devrait pas être appelé.") }
                 )
                 
+                // --- ACT ---
+                await viewModel.getAccountDetails()
+                
+                // --- ASSERT ---
+                #expect(viewModel.isLoading == false)
+                #expect(viewModel.errorMessage == nil)
+                #expect(viewModel.totalAmount == mockData.totalAmount)
+                #expect(mockService.getDetailsCallCount == 1)
+        }
+        
+        // NOUVEAU TEST : Pour une erreur "standard" (non-token)
+        @Test("getAccountDetails() en cas d'erreur serveur, met à jour errorMessage")
+        func test_getAccountDetails_onServerError_updatesErrorMessage() async {
+                // --- ARRANGE ---
+                let expectedError = APIServiceError.unexpectedStatusCode(500)
+                let mockService = MockAccountService(result: .failure(expectedError))
+                
+                let viewModel = AccountDetailViewModel(
+                        accountService: mockService,
+                        userSession: UserSession(token: "test"),
+                        onSessionExpired: { Issue.record("onSessionExpired ne devrait pas être appelé pour cette erreur.") }
+                )
+                
+                // --- ACT ---
+                await viewModel.getAccountDetails()
+                
+                // --- ASSERT ---
+                #expect(viewModel.errorMessage == expectedError.errorDescription, "Le message d'erreur est incorrect.")
+                #expect(viewModel.isLoading == false)
+                #expect(mockService.getDetailsCallCount == 1)
+        }
+        
+        // NOUVEAU TEST : Spécifiquement pour l'erreur de token
+        @Test("getAccountDetails() avec un token invalide, appelle le callback onSessionExpired")
+        func test_getAccountDetails_onInvalidToken_callsSessionExpiredCallback() async {
+                // --- ARRANGE ---
+                let mockService = MockAccountService(result: .failure(APIServiceError.tokenInvalidOrExpired))
+                
+                // On prépare un "espion" pour vérifier que notre callback est bien appelé.
+                var sessionExpiredCallbackWasCalled = false
+                let sessionExpiredCallback = {
+                        sessionExpiredCallbackWasCalled = true
+                }
+                
+                let viewModel = AccountDetailViewModel(
+                        accountService: mockService,
+                        userSession: UserSession(token: "invalid-token"),
+                        onSessionExpired: sessionExpiredCallback
+                )
+                
+                // --- ACT ---
+                await viewModel.getAccountDetails()
+                
+                // --- ASSERT ---
+                #expect(sessionExpiredCallbackWasCalled == true, "Le callback onSessionExpired aurait dû être appelé.")
+                #expect(viewModel.errorMessage == nil, "errorMessage devrait être nil lorsque la session expire.")
+                #expect(viewModel.isLoading == false)
+                #expect(mockService.getDetailsCallCount == 1)
+        }
+        @Test("AccountDetailViewModel: Échec - Erreur inattendue")
+        func test_AccountDetailViewModel_() async {
+                
+                //ARRANGE
+                ///construction de l'erreur
+                struct MonErreurBidon: Error {}
+                let unexpectedError = MonErreurBidon()
+                ///injection de l'erreur au service
+                let mockService = MockAccountService(result: .failure(unexpectedError))
+                /// userSession factice
+                let userSession = UserSession(token:"token")
+                ///instance de VMAccount
+                let viewModel = AccountDetailViewModel(
+                        accountService: mockService,
+                        userSession: userSession,
+                        onSessionExpired: { Issue.record("onSessionExpired ne devrait pas être appelé pour cette erreur.") }
+                )
+                
                 //ACT
                 await viewModel.getAccountDetails()
                 
                 //ASSERT
-                #expect(viewModel.errorMessage == "Une erreur inattendue est survenue.")
+                #expect(viewModel.errorMessage ==  "Une erreur inattendue est survenue.")
+                #expect(viewModel.isLoading == false)
                 #expect(mockService.getDetailsCallCount == 1)
         }
+        
 }

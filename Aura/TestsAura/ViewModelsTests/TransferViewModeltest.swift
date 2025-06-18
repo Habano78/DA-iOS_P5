@@ -9,29 +9,6 @@ import Testing
 @testable import Aura
 import Foundation
 
-//MARK: Ce MOck nous permet de contrôler le résultat de l'appel à sendMoney().
-private class MockTransferService: TransferServiceProtocol {
-        
-        /// On peut configurer ce mock pour qu'il retourne un succès ou une erreur.
-        /// Pour le succès, le type est Void, car la méthode ne retourne rien.
-        var sendMoneyResult: Result<Void, any Error>
-        
-        // "Espions" pour vérifier les interactions
-        private(set) var sendMoneyCallCount = 0
-        private(set) var receivedTransferData: TransferRequestData?
-        private(set) var receivedUserSession: UserSession?
-        
-        init(result: Result<Void, any Error>) {
-                self.sendMoneyResult = result
-        }
-        
-        func sendMoney(transferData: TransferRequestData, identifiant: UserSession) async throws {
-                sendMoneyCallCount += 1
-                receivedTransferData = transferData
-                receivedUserSession = identifiant
-                return try sendMoneyResult.get() /// .get() sur un Result<Void, Error> ne retourne rien si c'est un succès,  ou lance l'erreur si c'est un échec.
-        }
-}
 
 //MARK: TESTs
 @Suite(.serialized)
@@ -174,14 +151,14 @@ struct TransferViewModeltest {
         //MARK: Test pour une erreur inattendue
         @Test("sendMoney() en cas d'erreur inattendue, affiche un message générique")
         func testSendMoney_onUnexpectedError_setsGenericErrorMessage() async {
-                // --- ARRANGE ---
+                // ARRANGE 
                 ///On définit une erreur personnalisée qui n'est PAS une APIServiceError
                 struct CustomError: Error {}
                 let unexpectedError = CustomError()
                 
                 ///2. On configure le mock pour qu'il lance cette erreur
                 let mockService = MockTransferService(result: .failure(unexpectedError))
-                
+                ///appel au VM avec ses dépendances
                 let viewModel = MoneyTransferViewModel(
                         transferService: mockService,
                         userSession: UserSession(token: "test")
@@ -189,11 +166,11 @@ struct TransferViewModeltest {
                 viewModel.recipient = "ami@valide.com"
                 viewModel.amount = "100"
                 
-                // --- ACT ---
+                //  ACT
                 await viewModel.sendMoney()
                 
-                // --- ASSERT ---
-                // On vérifie que le message d'erreur est bien celui du bloc 'catch' générique
+                // ASSERT
+                /// On vérifie que le message d'erreur est bien celui du bloc 'catch' générique
                 #expect(viewModel.errorMessage == "Échec du transfert : une erreur est survenue lors du transfert.")
                 #expect(viewModel.successMessage == nil)
                 #expect(mockService.sendMoneyCallCount == 1)

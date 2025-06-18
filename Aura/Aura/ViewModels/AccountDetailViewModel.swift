@@ -12,7 +12,7 @@ import Foundation
 @MainActor
 class AccountDetailViewModel: ObservableObject {
         
-        // Les propriétés sont initialisées à "zéro". Elles seron peuplées après l'appel à l'API.
+        // Propriétés @Published pour l'UI
         @Published var totalAmount: Decimal = 0.0
         @Published var recentTransactions: [Transaction] = []
         
@@ -23,17 +23,19 @@ class AccountDetailViewModel: ObservableObject {
         // Dépendances injectées
         private let accountService: AccountServiceProtocol
         private let userSession: UserSession
-        
-        ///Callback pour signaler l'expiration de la session (suite au problème rencontré)
         private let onSessionExpired: () -> Void
-        //Initialiseur
-        init(accountService: AccountServiceProtocol, userSession: UserSession, onSessionExpired: @escaping () -> Void) {
+        
+        init(
+                accountService: AccountServiceProtocol,
+                userSession: UserSession,
+                onSessionExpired: @escaping () -> Void
+        ) {
                 self.accountService = accountService
                 self.userSession = userSession
                 self.onSessionExpired = onSessionExpired
         }
         
-        // La méthode pour charger les détails du compte reste la même.
+        // La méthode pour charger les détails du compte
         func getAccountDetails() async {
                 isLoading = true
                 defer { isLoading = false }
@@ -47,13 +49,23 @@ class AccountDetailViewModel: ObservableObject {
                         self.recentTransactions = accountDetails.transactions
                         
                 } catch let error as APIServiceError {
-                        self.errorMessage = error.errorDescription
+                        
+                        // Cette logique est là pour gérer l'erreur de token et déclencher une déconnexion globale.
+                        if case .tokenInvalidOrExpired = error {
+                                /// Si le token est invalide, on se deconnecte
+                                print("AccountDetailViewModel: Token expiré détecté, appel de onSessionExpired.")
+                                self.onSessionExpired()
+                        } else {
+                                /// Pour toutes les autres erreurs APIServiceError, on affiche le message.
+                                self.errorMessage = error.errorDescription
+                        }
+                        
                 } catch {
+                        print("AccountDetailViewModel: Échec - Erreur inattendue: \(error.localizedDescription)")
                         self.errorMessage = "Une erreur inattendue est survenue."
                 }
         }
 }
-
 
 //MARK: Changes.
 //1. Delete the struct Transaction {description:String,amount:String} because en contraduction with our business model Transaction.

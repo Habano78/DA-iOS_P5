@@ -8,31 +8,7 @@ import Testing
 @testable import Aura
 import Foundation
 
-//MARK: Ce MOCK(fausse version d'AuthService) nous permet de contrôler entièrement le résultat de l'appel à login() pendant les tests, sans faire de vrais appels réseau.
 
-private class MockAuthService: AuthenticationServiceProtocol {
-        
-        // On peut configurer ce mock pour qu'il retourne un succès ou une erreur.
-        var loginResult: Result<UserSession, any Error>
-        
-        /// Ces propriétés "espions" nous permettent de vérifier si et comment la méthode a été appelée.
-        var loginCallCount = 0
-        var receivedCredentials: AuthRequestDTO?
-        
-        // Initialiseur pour définir le comportement du mock pour un test donné.
-        init(result: Result<UserSession, any Error>) {
-                self.loginResult = result
-        }
-        
-        func login(credentials: AuthRequestDTO) async throws -> UserSession {
-                // Quand la méthode login est appelée :
-                loginCallCount += 1               // On incrémente le compteur d'appels.
-                receivedCredentials = credentials // On sauvegarde les credentials reçus pour vérification.
-                
-                // On retourne le résultat prédéfini (soit le UserSession, soit l'erreur).
-                return try loginResult.get()
-        }
-}
 
 //MARK: TESTs
 @Suite(.serialized)
