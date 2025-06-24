@@ -63,11 +63,11 @@ class MockAuthService: AuthenticationServiceProtocol {
         
         var loginResult: Result<UserSession, any Error>
         
-        //MARK: Propriétés espions
+        // Propriétés espions
         var loginCallCount = 0
         var receivedCredentials: AuthRequestDTO?
         
-        //MARK: Init pour définir le comportement du mock pour un test donné.
+        // Init pour définir le comportement du mock pour un test donné.
         init(result: Result<UserSession, any Error>) {
                 self.loginResult = result
         }
@@ -79,12 +79,12 @@ class MockAuthService: AuthenticationServiceProtocol {
         }
 }
 
-// MARK: Ce nous permet de contrôler le résultat de l'appel à getAccountDetails().
+// Ce nous permet de contrôler le résultat de l'appel à getAccountDetails().
 class MockAccountService: AccountServiceProtocol {
         
         var getDetailsResult: Result<AccountDetails, any Error>
         
-        //MARK: Propriétés espions
+        // Propriétés espions
         var getDetailsCallCount = 0
         var receivedUserSession: UserSession?
         
@@ -102,10 +102,9 @@ class MockAccountService: AccountServiceProtocol {
 //MARK: Ce MOck nous permet de contrôler le résultat de l'appel à sendMoney().
 class MockTransferService: TransferServiceProtocol {
 
-        /// Pour le succès, le type est Void, car la méthode ne retourne rien.
-        var sendMoneyResult: Result<Void, any Error>
+        var sendMoneyResult: Result<Void, any Error> /// Pour le succès, le type est Void, car la méthode ne retourne rien.
         
-        //MARK: Propriétés espions
+        //Propriétés espions
         private(set) var sendMoneyCallCount = 0
         private(set) var receivedTransferData: TransferRequestData?
         private(set) var receivedUserSession: UserSession?

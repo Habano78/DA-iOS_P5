@@ -102,7 +102,7 @@ struct AccountServiceTests {
                                 Issue.record("Une APIServiceError a été lancée, mais ce n'était pas le cas .responseDecodingFailed attendu. Erreur reçue: \(error)")
                         }
                 } catch {
-                       
+                        
                         Issue.record("Une erreur inattendue et d'un type non-APIServiceError a été lancée: \(error)")
                 }
         }
@@ -128,10 +128,49 @@ struct AccountServiceTests {
                         }
                         
                 } catch {
-                       
+                        
                         Issue.record("Une erreur inattendue et d'un type non-APIServiceError a été lancée: \(error)")
                 }
                 
+        }
+        
+        // NOUVEAU
+        @Test("cas d'une réponse non-HTTP. getAccountDetails() lance .networkError avec .badServerResponse")
+        func test_getAccountDetails_onNonHttpResponse_throwsNetworkError() async {
+                
+                //ARRANGE
+                let nonHttpResponse = URLResponse(
+                        url: accountURL,
+                        mimeType: nil,
+                        expectedContentLength: 0,
+                        textEncodingName: nil
+                )
+                
+                let nonHttpResult: Result<(Data, URLResponse), Error> = .success((Data(), nonHttpResponse))
+                
+                let mockUrlSession = MockURLSession(result: nonHttpResult)
+                
+                let accountService = AccountService(urlSession: mockUrlSession)
+                
+                // ACT & ASSERT
+                
+                do {
+                        _ = try await accountService.getAccountDetails(identifiant: UserSession(token: "any"))
+                        Issue.record("La fonction getAccountDetails() aurait dû lancer une erreur, mais elle a réussi.")
+                        
+                } catch let error as APIServiceError {
+                        
+                        if case .networkError(let underlyingError) = error {
+                                
+                                let urlError = try? #require(underlyingError as? URLError)
+                                #expect(urlError?.code == .badServerResponse)
+                        } else {
+                                Issue.record("L'erreur attendue était .networkError, mais nous avons reçu \(error)")
+                        }
+                        
+                } catch {
+                        Issue.record("Une erreur inattendue a été lancée: \(error)")
+                }
         }
 }///
 
