@@ -7,7 +7,7 @@
 
 import Foundation
 
-// Ce protocole définit le contrat pour tout objet capable d'encoder.
+//MARK: Protocole qui définit le contrat pour tout objet capable d'encoder.
 protocol JSONEncoderProtocol {
     func encode<T: Encodable>(_ value: T) throws -> Data
 }

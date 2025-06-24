@@ -12,8 +12,8 @@
 		225138A72DEA31DB00E96943 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138A62DEA31DB00E96943 /* AuthService.swift */; };
 		225138A92DEA458000E96943 /* AccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138A82DEA458000E96943 /* AccountService.swift */; };
 		225138AB2DEA6F2400E96943 /* TransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138AA2DEA6F2400E96943 /* TransferService.swift */; };
-		225138AD2DECB07E00E96943 /*  APIServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138AC2DECB07E00E96943 /*  APIServiceError.swift */; };
-		225138AF2DED882000E96943 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138AE2DED882000E96943 /* APIConfiguration.swift */; };
+		225138AD2DECB07E00E96943 /*  APIServiceErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138AC2DECB07E00E96943 /*  APIServiceErrors.swift */; };
+		225138AF2DED882000E96943 /* APIConfigurationBaseURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138AE2DED882000E96943 /* APIConfigurationBaseURL.swift */; };
 		225138B12DF014BE00E96943 /* TransactionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138B02DF014BE00E96943 /* TransactionListViewModel.swift */; };
 		225138B32DF0168600E96943 /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138B22DF0168600E96943 /* TransactionListView.swift */; };
 		225138B72DF1808B00E96943 /* KeyChainInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225138B62DF1808B00E96943 /* KeyChainInterface.swift */; };
@@ -64,8 +64,8 @@
 		225138A62DEA31DB00E96943 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		225138A82DEA458000E96943 /* AccountService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountService.swift; sourceTree = "<group>"; };
 		225138AA2DEA6F2400E96943 /* TransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferService.swift; sourceTree = "<group>"; };
-		225138AC2DECB07E00E96943 /*  APIServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " APIServiceError.swift"; sourceTree = "<group>"; };
-		225138AE2DED882000E96943 /* APIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfiguration.swift; sourceTree = "<group>"; };
+		225138AC2DECB07E00E96943 /*  APIServiceErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " APIServiceErrors.swift"; sourceTree = "<group>"; };
+		225138AE2DED882000E96943 /* APIConfigurationBaseURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfigurationBaseURL.swift; sourceTree = "<group>"; };
 		225138B02DF014BE00E96943 /* TransactionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListViewModel.swift; sourceTree = "<group>"; };
 		225138B22DF0168600E96943 /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
 		225138B62DF1808B00E96943 /* KeyChainInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainInterface.swift; sourceTree = "<group>"; };
@@ -135,8 +135,8 @@
 				225138A62DEA31DB00E96943 /* AuthService.swift */,
 				225138A82DEA458000E96943 /* AccountService.swift */,
 				225138AA2DEA6F2400E96943 /* TransferService.swift */,
-				225138AE2DED882000E96943 /* APIConfiguration.swift */,
-				225138AC2DECB07E00E96943 /*  APIServiceError.swift */,
+				225138AE2DED882000E96943 /* APIConfigurationBaseURL.swift */,
+				225138AC2DECB07E00E96943 /*  APIServiceErrors.swift */,
 			);
 			path = Networking_Service;
 			sourceTree = "<group>";
@@ -387,13 +387,13 @@
 				225138F42E02866000E96943 /* ContentView.swift in Sources */,
 				225138F02E004D4E00E96943 /* AuthTokenPersistence.swift in Sources */,
 				225138A42DE9DFB400E96943 /* DTOModels.swift in Sources */,
-				225138AF2DED882000E96943 /* APIConfiguration.swift in Sources */,
+				225138AF2DED882000E96943 /* APIConfigurationBaseURL.swift in Sources */,
 				53D418952AC70ABF0070ADB1 /* MoneyTransferView.swift in Sources */,
 				53D4189B2AC711990070ADB1 /* AuthenticationViewModel.swift in Sources */,
 				225138F62E0286EA00E96943 /* MainTabView.swift in Sources */,
 				53D4189D2AC715AA0070ADB1 /* AccountDetailViewModel.swift in Sources */,
 				53D418912AC70A920070ADB1 /* AuthenticationView.swift in Sources */,
-				225138AD2DECB07E00E96943 /*  APIServiceError.swift in Sources */,
+				225138AD2DECB07E00E96943 /*  APIServiceErrors.swift in Sources */,
 				225138AB2DEA6F2400E96943 /* TransferService.swift in Sources */,
 				53D418932AC70AB10070ADB1 /* AccountDetailView.swift in Sources */,
 				225138E12DFCB88F00E96943 /* JSONEncoderProtocol.swift in Sources */,

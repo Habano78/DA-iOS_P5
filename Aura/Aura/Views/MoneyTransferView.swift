@@ -42,7 +42,7 @@ struct MoneyTransferView: View {
                                         .background(Color.gray.opacity(0.2))
                                         .cornerRadius(8)
                                         .keyboardType(.emailAddress)
-                                        .disabled(viewModel.isLoading) ///Désactivé pendant le chargement
+                                        .disabled(viewModel.isLoading) 
                         }
                         
                         VStack(alignment: .leading) {
@@ -53,20 +53,20 @@ struct MoneyTransferView: View {
                                         .background(Color.gray.opacity(0.2))
                                         .cornerRadius(8)
                                         .keyboardType(.decimalPad)
-                                        .disabled(viewModel.isLoading) ///Désactivé pendant le chargement
+                                        .disabled(viewModel.isLoading)
                                 
                         }
-                        //MARK: Indicateur de chargement (s'affiche si isLoading est true)
+                        //MARK: indicateur de chargement (s'affiche si isLoading est true)
                         if viewModel.isLoading {
                                 ProgressView("Envoi en cours...")
                                         .padding(.top, 10)
                         }
-                        //MARK: Modif car la fonction sendMoney() est asynchrone
+        
                         Button(action: {
-                                Task { ///  crée un contexte asynchrone
-                                        await viewModel.sendMoney() /// appel async
-                                }/// termine la closure de l'action
-                        }, label: { /// paramètre LABEL  pour l'apparence du bouton
+                                Task {
+                                        await viewModel.sendMoney()
+                                }
+                        }, label: {
                                 HStack {
                                         Image(systemName: "arrow.right.circle.fill")
                                         Text("Send")
@@ -75,9 +75,9 @@ struct MoneyTransferView: View {
                                 .background(Color(hex: "#94A684"))
                                 .foregroundColor(.white)
                                 .cornerRadius(8)
-                        }) ///fin du label et fin de l'init du bouton
+                        })
                         .buttonStyle(PlainButtonStyle())
-                        .disabled(viewModel.isLoading) /// bouton est désactivé pendant le chargement
+                        .disabled(viewModel.isLoading)
                         
                         //MARK: Affichage du message de succès
                         if let successMessage = viewModel.successMessage {
@@ -88,18 +88,17 @@ struct MoneyTransferView: View {
                         }
                         
                         //MARK: Affichage du message d'erreur
-                        /// on les a mis à nil au début de sendMoney
                         if let errorMessage = viewModel.errorMessage {
                                 Text(errorMessage)
                                         .foregroundColor(.red)
                                         .padding(.top, 10)
                                         .multilineTextAlignment(.center)
-                                        .fixedSize(horizontal: false, vertical: true) /// Permet au texte de prendre plusieurs lignes
+                                        .fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer()
                 }
                 .padding()
-                .onTapGesture { /// This will dismiss the keyboard when tapping outside
+                .onTapGesture {
                         self.endEditing(true)
                 }
         }

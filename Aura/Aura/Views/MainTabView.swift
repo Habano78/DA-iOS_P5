@@ -9,14 +9,14 @@
 import SwiftUI
 
 struct MainTabView: View {
-        // Récupère l'AppViewModel partagé depuis l'environnement
+        
         @EnvironmentObject var appViewModel: AppViewModel
         
         var body: some View {
                 TabView {
-                        // Onglet Compte
+                        //MARK: onglet Compte
                         if let accountVM = appViewModel.stockedAccountDetailViewModel {
-                                NavigationStack { /// Important pour le titre et le bouton logout
+                                NavigationStack {
                                         AccountDetailView(viewModel: accountVM)
                                 }
                                 .tabItem {
@@ -29,9 +29,9 @@ struct MainTabView: View {
                                         }
                         }
                         
-                        // Onglet Transfert
+                        //MARK: Onglet Transfert
                         if let transferVM = appViewModel.stockedMoneyTransferViewModel {
-                                NavigationStack { /// Important pour donner un titre à la vue
+                                NavigationStack {
                                         MoneyTransferView(viewModel: transferVM)
                                                 .navigationTitle("Effectuer un Virement")
                                 }

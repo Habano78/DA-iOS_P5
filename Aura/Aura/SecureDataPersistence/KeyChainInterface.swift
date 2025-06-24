@@ -37,7 +37,7 @@ class KeychainService: KeychainInterface {
                 let status: OSStatus = SecItemAdd(query as CFDictionary, nil)
                 
                 if status == errSecDuplicateItem {
-                        // Update existing item
+                      
                         let statusUpdate = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
                         
                         guard statusUpdate == errSecSuccess else {

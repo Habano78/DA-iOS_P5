@@ -13,10 +13,11 @@ struct BusinessModelsTests {
         
         @Test
         func testUserSessionInitialization() throws {
-                ///données de tests
+               // ARRANGE
                 let token:String = "un-token-pour-le-test"
+                // ACT
                 let userSession = UserSession(token: token)
-                
+                // ASSERT
                 #expect(userSession.token == token)
         }
         //MARK: Mapping de TransactionDTO vers le modèle métier Transaction

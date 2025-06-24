@@ -20,17 +20,12 @@ class AppViewModel: ObservableObject {
         @Published var stockedMoneyTransferViewModel: MoneyTransferViewModel?
         
         // MARK: Dépendances (Services & Persistance)
-        
-        // Les dépendances sont des protocoles pour permettre l'injection de mocks pendant les tests.
         private let authService: AuthenticationServiceProtocol
         private let accountService: AccountServiceProtocol
         private let transferService: TransferServiceProtocol
         private let authTokenPersistence: AuthTokenPersistenceProtocol
         
-        // MARK: Initialiseur
-        // L'init accepte maintenant TOUTES les dépendances.
-        // Cela rend AppViewModel entièrement testable, car nous pouvons lui injecter
-        // des versions "mock" de chaque service et de la couche de persistance.
+        // MARK: Init
         init(
                 authService: AuthenticationServiceProtocol = AuthService(),
                 accountService: AccountServiceProtocol = AccountService(),
@@ -52,24 +47,20 @@ class AppViewModel: ObservableObject {
                 }
         }
         
-        // MARK: - ViewModels Enfants
-        
-        // Propriété calculée pour le ViewModel d'authentification
+        // MARK: Propriété calculée - ViewModels Enfants
         var authenticationViewModel: AuthenticationViewModel {
-                return AuthenticationViewModel (
+                return AuthenticationViewModel (///CRÉE LA NOUVELLE INSTANCE
                         authService: self.authService,
                         onLoginSucceed: { [weak self] receivedUserSession in
-                                self?.handleLoginSuccess(for: receivedUserSession)
+                                self?.handleLoginSuccess(for: receivedUserSession)///ici  fournit le code du callback pour gérer le succès
                         }
                 )
         }
         
-        // MARK: - Logique Métier Privée
-        
-        /// Gère la logique commune après un succès de connexion (manuel ou automatique).
+        // MARK: - Pour gérer la logique commune après un succès de connexion
         func handleLoginSuccess(for session: UserSession) {
                 print("AppViewModel: Succès de connexion.")
-                // Sauvegarde du token dans le Keychain
+                /// Sauvegarde du token dans le Keychain
                 do {
                         try self.authTokenPersistence.saveToken(session.token)
                         //print("AppViewModel: Token sauvegardé dans le Keychain.")
@@ -77,7 +68,7 @@ class AppViewModel: ObservableObject {
                         print("AppViewModel: ERREUR lors de la sauvegarde du token: \(error.localizedDescription)")
                 }
                 
-                // Mise à jour de l'état global de l'application
+                /// Mise à jour de l'état global de l'application
                 self.activeUserSession = session
                 self.isLogged = true
                 
@@ -87,7 +78,7 @@ class AppViewModel: ObservableObject {
                         self.logout()
                 }
                 
-                // Création des ViewModels pour la session connectée
+                ///s Création des ViewModels pour la session connectée
                 self.stockedAccountDetailViewModel = AccountDetailViewModel(
                         accountService: self.accountService,
                         userSession: session,
@@ -99,7 +90,7 @@ class AppViewModel: ObservableObject {
                 )
         }
         
-        /// Tente de connecter l'utilisateur automatiquement au démarrage de l'app.
+        //MARK: méthode pour tenter de connecter l'utilisateur automatiquement au démarrage de l'app.
         private func tryAutoLogin() async {
                 print("AppViewModel: Tentative de récupération du token existant...")
                 do {
@@ -114,24 +105,24 @@ class AppViewModel: ObservableObject {
                 }
         }
         
-        /// Gère la déconnexion demandée par l'utilisateur.
+        //MARK: Gère la déconnexion à la démande de l'utilisateur.
         func logout() {
-                /// Suppression du token du Keychain
                 do {
                         try self.authTokenPersistence.deleteToken()
                 } catch {
                         print("AppViewModel: ERREUR lors de la suppression du token: \(error.localizedDescription)")
                 }
                 
-                // Réinitialisation de l'état de l'application
+                //MARK: Réinitialisation de l'état de l'application
                 self.isLogged = false
                 self.activeUserSession = nil
                 self.stockedAccountDetailViewModel = nil
                 self.stockedMoneyTransferViewModel = nil
-                print("AppViewModel: État de déconnexion appliqué.")
         }
 }
-//MARK: // L'ancienne propriété calculée 'accountDetailViewModel' qui retournait AccountDetailViewModel()
+
+
+//MARK: MODIFICATIONS L'ancienne propriété calculée 'accountDetailViewModel' qui retournait AccountDetailViewModel()
 // est implicitement remplacée par l'utilisation de 'stockedAccountDetailViewModel'.
 // Les vues qui ont besoin de AccountDetailViewModel utiliseront maintenant
 // appViewModel.stockedAccountDetailViewModel (et géreront son optionalité).

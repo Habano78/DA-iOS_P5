@@ -8,19 +8,17 @@
 import Foundation
 
 protocol AuthenticationServiceProtocol {
-        /// Tente d'authentifier l'utilisateur avec les identifiants fournis.
-        /// - Returns: Une `UserSession` (modèle métier) en cas de succès.
-        /// - Throws: Une erreur si l'authentification échoue ou si un problème réseau survient.
         @MainActor
         func login(credentials: AuthRequestDTO) async throws -> UserSession
 }
+
 class AuthService: AuthenticationServiceProtocol {
         
         //MARK: Définition des propriétés d'instance dont la classe a besoin.
-        private nonisolated let urlSession: URLSessionProtocol  /// Instance pour exécuter les requêtes HTTP qui dépend du protocole URLSession
-
-        private let jsonEncoder: JSONEncoder                // Pour convertir les objets Swift en JSON
-        private let jsonDecoder: JSONDecoder                // Pour convertir le JSON en objets Swift.
+        private nonisolated let urlSession: URLSessionProtocol
+        
+        private let jsonEncoder: JSONEncoder
+        private let jsonDecoder: JSONDecoder
         
         init(urlSession: URLSessionProtocol = URLSession.shared) {
                 self.urlSession = urlSession
@@ -29,61 +27,61 @@ class AuthService: AuthenticationServiceProtocol {
         }
         
         func login(credentials: AuthRequestDTO) async throws -> UserSession {
-                //MARK: 1. Construction de l'URL complète pour l'endpoint "/auth".
+                //MARK: construction de l'URL complète pour l'endpoint "/auth".
                 guard let baseURL = URL(string: baseURL.baseURLString),
                       var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
-                        throw APIServiceError.invalidURL // Lance une erreur si l'x de base est invalide.
+                        throw APIServiceError.invalidURL // Lance une erreur si l'URL de base est invalide.
                 }
-                components.path = "/auth" // Ajoute le chemin spécifique de l'endpoint.
+                components.path = "/auth"
                 
                 guard let url = components.url else {
-                        throw APIServiceError.invalidURL // Lance une erreur si l'URL finale est invalide.
+                        throw APIServiceError.invalidURL
                 }
                 
-                //MARK: 2. Création et configuration de l'objet URLRequest.
-                var request = URLRequest(url: url)          // Crée la requête avec l'URL construite.
-                request.httpMethod = "POST"                 // Définit la méthode HTTP sur POST.
-                request.setValue("application/json", forHTTPHeaderField: "Content-Type") // Indique que le corps est en JSON.
+                //MARK: création et configuration de l'objet URLRequest.
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 
-                //MARK: 3. Encodage des 'credentials' (AuthRequestDTO) en JSON pour le corps de la requête.
+                //MARK: encodage des 'credentials' (AuthRequestDTO) en JSON pour le corps de la requête.
                 do {
-                        request.httpBody = try jsonEncoder.encode(credentials) // Tente d'encoder les données.
+                        request.httpBody = try jsonEncoder.encode(credentials)
                 } catch {
-                        throw APIServiceError.requestEncodingFailed(error) // Lance une erreur si l'encodage échoue.
+                        throw APIServiceError.requestEncodingFailed(error)
                 }
                 
-                // Déclaration des variables pour stocker les données et la réponse de l'appel réseau.
+                //MARK: stockage des données et de la réponse de l'appel réseau.
                 let data: Data
                 let response: URLResponse
                 
-                //Exécution de l'appel réseau asynchrone.
+                //MARK: exécution de l'appel réseau (asynchrone)
                 do {
                         (data, response) = try await urlSession.data(for: request)
                 } catch {
                         throw APIServiceError.networkError(error) // Lance une erreur en cas de problème réseau.
                 }
                 
-                // 5. Vérification de la réponse HTTP.
-                guard let httpResponse = response as? HTTPURLResponse else { // S'assure que la réponse est bien une réponse HTTP.
-                        throw APIServiceError.networkError(URLError(.badServerResponse)) // Lance une erreur si la réponse n'est pas HTTP.
+                //MARK: vérification de la réponse HTTP.
+                guard let httpResponse = response as? HTTPURLResponse else {
+                        throw APIServiceError.networkError(URLError(.badServerResponse))
                 }
                 
-                // Vérifie si le code de statut HTTP est 200 (OK).
+                //MARK: vérification de si le code de statut HTTP est 200 (OK)
                 guard httpResponse.statusCode == 200 else {
-                        if httpResponse.statusCode == 401 || httpResponse.statusCode == 403 { // Cas spécifique : identifiants incorrects.
+                        if httpResponse.statusCode == 401 || httpResponse.statusCode == 403 {
                                 throw APIServiceError.invalidCredentials
-                        } else { // Autres codes d'erreur HTTP.
+                        } else {
                                 throw APIServiceError.unexpectedStatusCode(httpResponse.statusCode)
                         }
                 }
-                
-                // 6. Décodage de la réponse JSON en AuthResponseDTO.
+                //MARK: décodage de la réponse JSON en AuthResponseDTO.
                 do {
-                        let authResponseDTO = try jsonDecoder.decode(AuthResponseDTO.self, from: data) // Tente de décoder les données reçues.
-                        // 7. Création et retour du modèle métier UserSession avec le token.
+                        let authResponseDTO = try jsonDecoder.decode(AuthResponseDTO.self, from: data)
+                        
+                        //MARK: création et retour du modèle métier UserSession avec le token.
                         return UserSession(token: authResponseDTO.token)
                 } catch {
-                        throw APIServiceError.responseDecodingFailed(error)// Lance une erreur si le décodage échoue.
+                        throw APIServiceError.responseDecodingFailed(error)
                 }
         }
 }

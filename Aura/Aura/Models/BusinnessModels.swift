@@ -7,8 +7,8 @@
 
 import Foundation
 
-// MARK: Authentication Model. Représenter la session active de l'utilisateur au sein de l'application.
-struct UserSession: Equatable{
+// MARK: Représenter la session active de l'utilisateur au sein de l'application.
+struct UserSession: Equatable {
         let token: String
 }
 
@@ -19,8 +19,7 @@ struct Transaction: Identifiable, Hashable {
         let value: Decimal
         
         
-        //Initialiseur pour convertir un TransactionDTO en Transaction métier
-        // On ajoute ici la logique pour les champs manquants dans le DTO.
+        //MARK: Init
         init (from dto: TransactionDTO) {
                 self.id=UUID() // L'API ne fournit pas d'ID, donc nous en générons un côté client.
                 self.value = dto.value
@@ -39,13 +38,13 @@ struct AccountDetails {
         let totalAmount: Decimal
         let transactions: [Transaction]
         
-        // Init pour convertir un AccountDetailsDTO en AccountDetail (modèle métier)
+        //MARK: Mapping
         init(from dto: AccountDetailsDTO) {
-                self.totalAmount = dto.currentBalance // Mapping de dto.currentBalance vers self.totalAmount
-                self.transactions = dto.transactions.map(Transaction.init)// chaque Transaction DTO devient une instance du ModMétier Transaction.
+                self.totalAmount = dto.currentBalance
+                self.transactions = dto.transactions.map(Transaction.init)
         }
         
-        // Un init pour créer des instances d'AccountDetail manuellement
+        //MARK: Init pour créer des instances d'AccountDetail manuellement
         // (utile pour les prévisualisations SwiftUI ou les tests)
         init(totalAmount: Decimal, transactions: [Transaction]) {
                 self.totalAmount = totalAmount
@@ -59,3 +58,4 @@ struct TransferRequestData {
         let amount: Decimal
 }
  
+// Question TransfeRequestData

@@ -9,7 +9,6 @@ import Testing
 @testable import Aura
 import Foundation
 
-// MARK: - Suite de Tests pour AccountDetailViewModel
 
 @Suite(.serialized)
 @MainActor
@@ -17,7 +16,7 @@ struct AccountDetailViewModelTests {
         
         @Test("getAccountDetails() en cas de succès, met à jour les propriétés")
         func test_getAccountDetails_onSuccess_updatesProperties() async {
-                // --- ARRANGE ---
+                // ARRANGE
                 let mockData = AccountDetails(totalAmount: 1234.56, transactions: [Transaction(value: 100, label: "Test")])
                 let mockService = MockAccountService(result: .success(mockData))
                 let viewModel = AccountDetailViewModel(
@@ -26,20 +25,20 @@ struct AccountDetailViewModelTests {
                         onSessionExpired: { Issue.record("onSessionExpired ne devrait pas être appelé.") }
                 )
                 
-                // --- ACT ---
+                // ACT
                 await viewModel.getAccountDetails()
                 
-                // --- ASSERT ---
+                // ASSERT
                 #expect(viewModel.isLoading == false)
                 #expect(viewModel.errorMessage == nil)
                 #expect(viewModel.totalAmount == mockData.totalAmount)
                 #expect(mockService.getDetailsCallCount == 1)
         }
         
-        // NOUVEAU TEST : Pour une erreur "standard" (non-token)
+        
         @Test("getAccountDetails() en cas d'erreur serveur, met à jour errorMessage")
         func test_getAccountDetails_onServerError_updatesErrorMessage() async {
-                // --- ARRANGE ---
+                // ARRANGE
                 let expectedError = APIServiceError.unexpectedStatusCode(500)
                 let mockService = MockAccountService(result: .failure(expectedError))
                 
@@ -49,22 +48,20 @@ struct AccountDetailViewModelTests {
                         onSessionExpired: { Issue.record("onSessionExpired ne devrait pas être appelé pour cette erreur.") }
                 )
                 
-                // --- ACT ---
+                // ACT
                 await viewModel.getAccountDetails()
                 
-                // --- ASSERT ---
+                // ASSERT
                 #expect(viewModel.errorMessage == expectedError.errorDescription, "Le message d'erreur est incorrect.")
                 #expect(viewModel.isLoading == false)
                 #expect(mockService.getDetailsCallCount == 1)
         }
         
-        // NOUVEAU TEST : Spécifiquement pour l'erreur de token
         @Test("getAccountDetails() avec un token invalide, appelle le callback onSessionExpired")
         func test_getAccountDetails_onInvalidToken_callsSessionExpiredCallback() async {
-                // --- ARRANGE ---
+                // ARRANGE
                 let mockService = MockAccountService(result: .failure(APIServiceError.tokenInvalidOrExpired))
-                
-                // On prépare un "espion" pour vérifier que notre callback est bien appelé.
+                ///  "espions" pour vérifier que notre callback est bien appelé.
                 var sessionExpiredCallbackWasCalled = false
                 let sessionExpiredCallback = {
                         sessionExpiredCallbackWasCalled = true
@@ -76,10 +73,10 @@ struct AccountDetailViewModelTests {
                         onSessionExpired: sessionExpiredCallback
                 )
                 
-                // --- ACT ---
+                // ACT
                 await viewModel.getAccountDetails()
                 
-                // --- ASSERT ---
+                // ASSERT
                 #expect(sessionExpiredCallbackWasCalled == true, "Le callback onSessionExpired aurait dû être appelé.")
                 #expect(viewModel.errorMessage == nil, "errorMessage devrait être nil lorsque la session expire.")
                 #expect(viewModel.isLoading == false)
@@ -88,8 +85,7 @@ struct AccountDetailViewModelTests {
         @Test("AccountDetailViewModel: Échec - Erreur inattendue")
         func test_AccountDetailViewModel_() async {
                 
-                //ARRANGE
-                ///construction de l'erreur
+                // ARRANGE
                 struct MonErreurBidon: Error {}
                 let unexpectedError = MonErreurBidon()
                 ///injection de l'erreur au service
@@ -103,10 +99,10 @@ struct AccountDetailViewModelTests {
                         onSessionExpired: { Issue.record("onSessionExpired ne devrait pas être appelé pour cette erreur.") }
                 )
                 
-                //ACT
+                // ACT
                 await viewModel.getAccountDetails()
                 
-                //ASSERT
+                // ASSERT
                 #expect(viewModel.errorMessage ==  "Une erreur inattendue est survenue.")
                 #expect(viewModel.isLoading == false)
                 #expect(mockService.getDetailsCallCount == 1)

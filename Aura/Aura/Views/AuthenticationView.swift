@@ -17,7 +17,6 @@ struct AuthenticationView: View {
         var body: some View {
                 
                 ZStack {
-                        // Background gradient
                         LinearGradient(gradient: Gradient(colors: [gradientStart, gradientEnd]), startPoint: .top, endPoint: .bottomLeading)
                                 .edgesIgnoringSafeArea(.all)
                         
@@ -65,14 +64,14 @@ struct AuthenticationView: View {
                                 }
                                 .disabled(viewModel.isLoading) ///Le bouton est désactivé si isLoading est true
                                 
-                                //MARK: AJOUT POUR LE MESSAGE D'ERREUR
+                                //MARK: Affichage de MESSAGE D'ERREUR
                                 /// D'abord on vérifie si viewModel.errorMessage contient une valeur (si ce n'est pas nil)
                                 if let errorMessage = viewModel.errorMessage {
                                         ///S'il y a ereur, on affiche le message d'erreur dans un Text
                                         Text(errorMessage)
-                                                .foregroundColor(.red) // (C) En rouge pour attirer l'attention
-                                                .padding(.top, 5)     // Un peu d'espace au-dessus
-                                                .multilineTextAlignment(.center) // Au cas où le message est long
+                                                .foregroundColor(.red)
+                                                .padding(.top, 5)
+                                                .multilineTextAlignment(.center) /// Au cas où le message est long
                                                 .fixedSize(horizontal: false, vertical: true) // Permet au texte de prendre plusieurs lignes
                                 }
                         }
