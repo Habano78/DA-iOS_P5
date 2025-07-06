@@ -21,9 +21,9 @@ class AppViewModel: ObservableObject {
         
         // MARK: Dépendances (Services & Persistance)
         private let authService: AuthenticationServiceProtocol
+        private let authTokenPersistence: AuthTokenPersistenceProtocol
         private let accountService: AccountServiceProtocol
         private let transferService: TransferServiceProtocol
-        private let authTokenPersistence: AuthTokenPersistenceProtocol
         
         // MARK: Init
         init(
@@ -49,10 +49,10 @@ class AppViewModel: ObservableObject {
         
         // MARK: Propriété calculée - ViewModels Enfants
         var authenticationViewModel: AuthenticationViewModel {
-                return AuthenticationViewModel (///CRÉE LA NOUVELLE INSTANCE
+                return AuthenticationViewModel (
                         authService: self.authService,
                         onLoginSucceed: { [weak self] receivedUserSession in
-                                self?.handleLoginSuccess(for: receivedUserSession)///ici  fournit le code du callback pour gérer le succès
+                                self?.handleLoginSuccess(for: receivedUserSession)/// callback pour gérer le succès
                         }
                 )
         }
@@ -78,7 +78,7 @@ class AppViewModel: ObservableObject {
                         self.logout()
                 }
                 
-                ///s Création des ViewModels pour la session connectée
+                /// Création des ViewModels pour la session connectée
                 self.stockedAccountDetailViewModel = AccountDetailViewModel(
                         accountService: self.accountService,
                         userSession: session,

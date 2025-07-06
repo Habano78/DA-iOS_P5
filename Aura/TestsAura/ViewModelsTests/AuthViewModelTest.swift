@@ -42,7 +42,6 @@ struct AuthenticationViewModelTests {
                 // ASSERT
                 #expect(viewModel.isLoading == false, "isLoading devrait être false après l'appel.")
                 #expect(viewModel.errorMessage == nil, "errorMessage devrait être nil en cas de succès.")
-               
                 #expect(mockService.loginCallCount == 1, "La méthode login du service aurait dû être appelée une seule fois.")
                 #expect(mockService.receivedCredentials?.username == "test@user.com", "Le username envoyé au service est incorrect.")
                 #expect(mockService.receivedCredentials?.password == "password123", "Le mot de passe envoyé au service est incorrect.")
@@ -57,6 +56,7 @@ struct AuthenticationViewModelTests {
                 // ARRANGE
                 let expectedError = APIServiceError.invalidCredentials
                 let mockService = MockAuthService(result: .failure(expectedError))
+                
                 var wasSuccessCallbackCalled = false
                 let successCallback: (UserSession) -> Void = { _ in
                         wasSuccessCallbackCalled = true

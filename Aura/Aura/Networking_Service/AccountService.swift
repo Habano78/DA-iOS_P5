@@ -26,7 +26,7 @@ class AccountService: AccountServiceProtocol{
         @MainActor
         func getAccountDetails(identifiant: UserSession) async throws -> AccountDetails {
                 
-                //MARK: construction de l'URL final (finalURL)
+                // construction de l'URL final
                 guard let baseURL = URL(string: baseURL.baseURLString) else {
                         throw APIServiceError.invalidURL
                 }

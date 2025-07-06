@@ -123,8 +123,8 @@
 		225138A22DE9DF9C00E96943 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				225138A02DE9DF7E00E96943 /* BusinnessModels.swift */,
 				225138A32DE9DFB400E96943 /* DTOModels.swift */,
+				225138A02DE9DF7E00E96943 /* BusinnessModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";

@@ -1,5 +1,5 @@
 //
-//  MockURLSession.swift
+//  Mocks.swift
 //  AuraTests
 //
 //  Created by Perez William on 08/06/2025.
@@ -15,7 +15,7 @@ final class MockURLSession: URLSessionProtocol,  @unchecked Sendable {
         private let lock = NSLock()
         
         //MARK: propriétés privés pour forcer l'accés via le verrou
-        // Les propriétés privées qui stockent réellement les données.
+        // propriétés privées qui stockent réellement les données.
         private var _result: Result<(Data, URLResponse), Error>
         private var _capturedRequest: URLRequest?
         

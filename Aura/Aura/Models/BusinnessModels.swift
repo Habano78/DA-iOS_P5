@@ -19,7 +19,7 @@ struct Transaction: Identifiable, Hashable {
         let value: Decimal
         
         
-        //MARK: Init
+        //MARK: Init (mapping)
         init (from dto: TransactionDTO) {
                 self.id=UUID() // L'API ne fournit pas d'ID, donc nous en générons un côté client.
                 self.value = dto.value

@@ -14,7 +14,7 @@ protocol AuthenticationServiceProtocol {
 
 class AuthService: AuthenticationServiceProtocol {
         
-        //MARK: Définition des propriétés d'instance dont la classe a besoin.
+        //MARK: 
         private nonisolated let urlSession: URLSessionProtocol
         
         private let jsonEncoder: JSONEncoder
