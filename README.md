@@ -17,6 +17,7 @@ Introduction
 Aura is a simple banking application that simulates the core functionalities of a financial app. It allows users to log in securely, view their account balance and transaction history, and send money. The project emphasizes a clean, testable, and maintainable codebase.
 
 Features
+
 ✅ User Authentication: Log in with an email and password.
 
 ✅ Secure Session Persistence: The session token is securely stored in the Keychain, allowing the user to stay logged in between app launches.
